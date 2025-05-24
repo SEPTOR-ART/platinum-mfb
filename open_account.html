@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Platinum Microfinance Bank - Open Account</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Sidebar -->
+  <div id="sidebar" class="sidebar" aria-hidden="true" role="navigation">
+    <div class="sidebar-header">
+      <h4>Platinum MFB</h4>
+    </div>
+    <a href="javascript:void(0)" class="closebtn" onclick="closeSidebar()" aria-label="Close Sidebar">×</a>
+    <a href="index.html" class="sidebar-menu-item"><i class="fas fa-home"></i> Home</a>
+    <a href="open_account.html" class="sidebar-menu-item active"><i class="fas fa-user-plus"></i> Open Account</a>
+    <a href="loan.html" class="sidebar-menu-item"><i class="fas fa-hand-holding-usd"></i> Apply for Loan</a>
+    <a href="savings.html" class="sidebar-menu-item"><i class="fas fa-piggy-bank"></i> Savings Products</a>
+    <a href="investments.html" class="sidebar-menu-item"><i class="fas fa-chart-line"></i> Investments</a>
+    <a href="about.html" class="sidebar-menu-item"><i class="fas fa-info-circle"></i> About Us</a>
+    <a href="contact.html" class="sidebar-menu-item"><i class="fas fa-phone"></i> Contact Us</a>
+    <a href="career.html" class="sidebar-menu-item"><i class="fas fa-briefcase"></i> Careers</a>
+    <a href="faqs.html" class="sidebar-menu-item"><i class="fas fa-question-circle"></i> FAQs</a>
+  </div>
+
+  <!-- Top Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+      <span class="btn btn-outline-light me-3" onclick="openSidebar()" aria-label="Open Sidebar Menu">☰</span>
+      <a class="navbar-brand" href="index.html">
+        <img src="assets/images/logo.png" alt="Logo" width="40" height="40" class="me-2 rounded-circle" />
+        Platinum MFB
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="index.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="about.html">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="services.html">Services</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="contact.html">Contact</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="hero-section">
+    <div class="container">
+      <div class="hero-content">
+        <h1 class="display-4 fw-bold animate-fadeInUp">Open Your Account Today</h1>
+        <p class="lead mb-4 animate-fadeInUp">Join Platinum MFB and start your journey to financial success with a quick and easy account opening process.</p>
+        <div class="hero-buttons">
+          <a href="#application-form" class="btn btn-primary btn-lg animate-fadeInUp">Get Started</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Application Form Section -->
+  <section class="services-section" id="application-form">
+    <div class="container">
+      <h2 class="section-title">Account Application Form</h2>
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="service-card p-4">
+            <form id="account-form">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="full-name" class="form-label">Full Name</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                    <input type="text" class="form-control" id="full-name" name="full_name" placeholder="Enter your full name" required>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="email" class="form-label">Email Address</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="phone" class="form-label">Phone Number</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                    <input type="tel" class="form-control" id="phone" name="phone" placeholder="Enter your phone number" required>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="account-type" class="form-label">Account Type</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-piggy-bank"></i></span>
+                    <select class="form-control" id="account-type" name="account_type" required>
+                      <option value="" disabled selected>Select account type</option>
+                      <option value="personal">Personal Account</option>
+                      <option value="business">Business Account</option>
+                      <option value="savings">Savings Account</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="address" class="form-label">Address</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                  <textarea class="form-control" id="address" name="address" rows="4" placeholder="Enter your address" required></textarea>
+                </div>
+              </div>
+              <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="terms" name="terms" required>
+                <label class="form-check-label" for="terms">I agree to the <a href="terms.html">Terms & Conditions</a> and <a href="privacy.html">Privacy Policy</a></label>
+              </div>
+              <button type="submit" class="btn btn-primary w-100 py-2">Submit Application</button>
+            </form>
+            <div id="form-message" class="mt-3"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-content">
+        <h2>Ready to Join Platinum MFB?</h2>
+        <p>Start banking with us today and enjoy secure, reliable, and accessible financial services tailored to your needs.</p>
+        <a href="#application-form" class="btn btn-primary btn-lg">Apply Now</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 mb-4">
+          <div class="footer-logo d-flex align-items-center">
+            <img src="assets/images/logo.png" alt="Logo" class="rounded-circle" />
+            <h3 class="mb-0 text-white">Platinum MFB</h3>
+          </div>
+          <p class="footer-text">Platinum Microfinance Bank offers comprehensive banking solutions with a focus on accessibility, security, and customer satisfaction.</p>
+          <div class="social-links">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+        <div class="col-lg-2 col-md-4 mb-4">
+          <h4 class="footer-heading">Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="services.html">Services</a></li>
+            <li><a href="career.html">Careers</a></li>
+            <li><a href="terms.html">Terms & Conditions</a></li>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-2 col-md-4 mb-4">
+          <h4 class="footer-heading">Banking</h4>
+          <ul class="footer-links">
+            <li><a href="savings.html">Savings</a></li>
+            <li><a href="loan.html">Loans</a></li>
+            <li><a href="investments.html">Investments</a></li>
+            <li><a href="mobile-banking.html">Mobile Banking</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-4 col-md-4 mb-4">
+          <h4 class="footer-heading">Contact Us</h4>
+          <div class="footer-contact-item">
+            <div class="footer-contact-icon">
+              <i class="fas fa-map-marker-alt"></i>
+            </div>
+            <div>
+              123 Banking Street, Financial District,<br>City, Country
+            </div>
+          </div>
+          <div class="footer-contact-item">
+            <div class="footer-contact-icon">
+              <i class="fas fa-phone-alt"></i>
+            </div>
+            <div>
+              +1 (555) 123-4567<br>+1 (555) 765-4321
+            </div>
+          </div>
+          <div class="footer-contact-item">
+            <div class="footer-contact-icon">
+              <i class="fas fa-envelope"></i>
+            </div>
+            <div>
+              info@platinummfb.com<br>support@platinummfb.com
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom text-center">
+      <div class="container">
+        <p class="mb-0">© 2025 Platinum Microfinance Bank. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="scripts.js"></script>
+  <script>
+    document.getElementById('account-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const full_name = document.getElementById('full-name').value;
+      const email = document.getElementById('email').value;
+      const phone = document.getElementById('phone').value;
+      const account_type = document.getElementById('account-type').value;
+      const address = document.getElementById('address').value;
+      const terms = document.getElementById('terms').checked;
+      const messageDiv = document.getElementById('form-message');
+
+      if (!terms) {
+        messageDiv.innerHTML = '<div class="alert alert-danger">You must agree to the Terms & Conditions and Privacy Policy.</div>';
+        return;
+      }
+
+      try {
+        console.log('Submitting account application:', { full_name, email, phone, account_type, address });
+        const response = await fetch('http://localhost:5000/api/open-account', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ full_name, email, phone, account_type, address })
+        });
+        const result = await response.json();
+        if (response.ok) {
+          messageDiv.innerHTML = '<div class="alert alert-success">Account application submitted successfully!</div>';
+          document.getElementById('account-form').reset();
+        } else {
+          messageDiv.innerHTML = `<div class="alert alert-danger">Error: ${result.error}</div>`;
+        }
+      } catch (error) {
+        console.error('Error submitting application:', error);
+        messageDiv.innerHTML = '<div class="alert alert-danger">Error submitting application.</div>';
+      }
+    });
+  </script>
+</body>
+</html>
