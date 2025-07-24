@@ -69,12 +69,56 @@
     </div>
   </header>
 
+  <!-- Investment Benefits Section -->
+  <section class="features-section">
+    <div class="container">
+      <h2 class="section-title">Investment Benefits</h2>
+      <div class="row">
+        <div class="col-md-4 mb-4">
+          <div class="feature-item animate-fadeInUp">
+            <div class="feature-icon">
+              <i class="fas fa-divide"></i>
+            </div>
+            <div class="feature-content">
+              <h3>Diversification</h3>
+              <p>Spread your investments across various assets for reduced risk.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-4">
+          <div class="feature-item animate-fadeInUp">
+            <div class="feature-icon">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="feature-content">
+              <h3>Expert Advice</h3>
+              <p>Benefit from our team of financial experts.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-4">
+          <div class="feature-item animate-fadeInUp">
+            <div class="feature-icon">
+              <i class="fas fa-shield-alt"></i>
+            </div>
+            <div class="feature-content">
+              <h3>Secure Options</h3>
+              <p>Invest with confidence using our secure platforms.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Investments Section -->
   <section class="services-section" id="investments">
     <div class="container">
       <h2 class="section-title">Our Investment Plans</h2>
       <div id="investment-list" class="row">
-        <!-- Investments will be dynamically inserted here -->
+        <div class="col-12 text-center">
+          <p class="loading-text animate-fadeInUp">Loading investment options...</p>
+        </div>
       </div>
     </div>
   </section>
@@ -167,17 +211,18 @@
   <script>
     // Fetch investments
     async function fetchInvestments() {
+      const investmentList = document.getElementById('investment-list');
+      investmentList.innerHTML = '<div class="col-12 text-center"><p class="loading-text animate-fadeInUp">Loading investment options...</p></div>';
+
       try {
-        console.log('Fetching investments from backend...');
         const response = await fetch('http://localhost:5000/api/investments');
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const investments = await response.json();
-        const investmentList = document.getElementById('investment-list');
         investmentList.innerHTML = '';
         if (investments.length === 0) {
-          investmentList.innerHTML = '<p class="text-center">No investment options available at this time.</p>';
+          investmentList.innerHTML = '<p class="text-center animate-fadeInUp">No investment options available at this time.</p>';
           return;
         }
         investments.forEach(investment => {
@@ -187,6 +232,7 @@
                 <h3>${investment.title}</h3>
                 <p>${investment.description}</p>
                 <p><strong>Minimum Investment:</strong> $${investment.minimum_investment}</p>
+                <p><strong>Return Rate:</strong> ${investment.return_rate || 'N/A'}%</p>
                 <a href="contact.html" class="btn btn-outline-success">Learn More</a>
               </div>
             </div>
@@ -195,12 +241,12 @@
         });
       } catch (error) {
         console.error('Error fetching investments:', error);
-        document.getElementById('investment-list').innerHTML = '<p class="text-center">Error loading investments.</p>';
+        document.getElementById('investment-list').innerHTML = '<p class="text-center animate-fadeInUp">Error loading investments.</p>';
       }
     }
 
     // Load investments on page load
-    fetchInvestments();
+    document.addEventListener('DOMContentLoaded', fetchInvestments);
   </script>
 </body>
 </html>
