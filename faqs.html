@@ -71,7 +71,9 @@
     <div class="container">
       <h2 class="section-title">FAQs</h2>
       <div id="faq-list">
-        <!-- FAQs will be dynamically inserted here -->
+        <div class="col-12 text-center">
+          <p class="loading-text animate-fadeInUp">Loading FAQs...</p>
+        </div>
       </div>
     </div>
   </section>
@@ -89,9 +91,9 @@
           <label for="answer" class="form-label">Answer</label>
           <textarea class="form-control" id="answer" name="answer" rows="3" required></textarea>
         </div>
+        <div id="faq-message" class="mb-3"></div>
         <button type="submit" class="btn btn-primary">Add FAQ</button>
       </form>
-      <div id="faq-message" class="mt-3"></div>
     </div>
   </section>
 
@@ -183,26 +185,29 @@
   <script>
     // Fetch FAQs
     async function fetchFAQs() {
+      const faqList = document.getElementById('faq-list');
+      faqList.innerHTML = '<div class="col-12 text-center"><p class="loading-text animate-fadeInUp">Loading FAQs...</p></div>';
+
       try {
-        console.log('Fetching FAQs from backend...');
         const response = await fetch('http://localhost:5000/api/faqs');
         const faqs = await response.json();
-        const faqList = document.getElementById('faq-list');
         faqList.innerHTML = '';
         if (faqs.length === 0) {
-          faqList.innerHTML = '<p class="text-center">No FAQs available at this time.</p>';
+          faqList.innerHTML = '<p class="text-center animate-fadeInUp">No FAQs available at this time.</p>';
           return;
         }
+        const timestamp = Date.now();
         faqs.forEach(faq => {
+          const faqId = `${timestamp}-${faq._id || Math.random().toString(36).substr(2, 9)}`;
           const faqItem = `
-            <div class="accordion mb-3" id="faqAccordion-${faq._id}">
+            <div class="accordion mb-3" id="faqAccordion-${faqId}">
               <div class="accordion-item">
-                <h2 class="accordion-header" id="heading-${faq._id}">
-                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-${faq._id}" aria-expanded="false" aria-controls="collapse-${faq._id}">
+                <h2 class="accordion-header" id="heading-${faqId}">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-${faqId}" aria-expanded="false" aria-controls="collapse-${faqId}">
                     ${faq.question}
                   </button>
                 </h2>
-                <div id="collapse-${faq._id}" class="accordion-collapse collapse" aria-labelledby="heading-${faq._id}" data-bs-parent="#faqAccordion-${faq._id}">
+                <div id="collapse-${faqId}" class="accordion-collapse collapse" aria-labelledby="heading-${faqId}" data-bs-parent="#faqAccordion-${faqId}">
                   <div class="accordion-body">
                     ${faq.answer}
                   </div>
@@ -214,19 +219,24 @@
         });
       } catch (error) {
         console.error('Error fetching FAQs:', error);
-        document.getElementById('faq-list').innerHTML = '<p class="text-center">Error loading FAQs.</p>';
+        faqList.innerHTML = '<p class="text-center animate-fadeInUp">Error loading FAQs.</p>';
       }
     }
 
     // Handle FAQ form submission
     document.getElementById('faq-form').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const question = document.getElementById('question').value;
-      const answer = document.getElementById('answer').value;
+      const question = document.getElementById('question').value.trim();
+      const answer = document.getElementById('answer').value.trim();
       const messageDiv = document.getElementById('faq-message');
 
+      if (!question || !answer) {
+        messageDiv.innerHTML = '<div class="alert alert-danger">Both question and answer are required.</div>';
+        return;
+      }
+
+      messageDiv.innerHTML = '<div class="alert alert-info">Adding FAQ...</div>';
       try {
-        console.log('Submitting new FAQ:', { question, answer });
         const response = await fetch('http://localhost:5000/api/faqs', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -247,7 +257,7 @@
     });
 
     // Load FAQs on page load
-    fetchFAQs();
+    document.addEventListener('DOMContentLoaded', fetchFAQs);
   </script>
 </body>
 </html>
