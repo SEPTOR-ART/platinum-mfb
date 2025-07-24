@@ -21,7 +21,6 @@
       color: var(--text-dark);
     }
 
-    /* Navigation */
     .navbar {
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
       padding: 0.8rem 1rem;
@@ -39,7 +38,6 @@
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     }
 
-    /* Sidebar */
     .sidebar {
       height: 100%;
       width: 0;
@@ -97,7 +95,6 @@
       text-align: center;
     }
 
-    /* Hero Section */
     .hero-section {
       background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('assets/images/hero-bg.jpg') center/cover no-repeat;
       color: white;
@@ -158,7 +155,6 @@
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
-    /* Services Section */
     .services-section {
       padding: 80px 0;
       background-color: var(--secondary);
@@ -228,7 +224,6 @@
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
-    /* Features Section */
     .features-section {
       padding: 80px 0;
     }
@@ -263,7 +258,6 @@
       margin-bottom: 0;
     }
 
-    /* Products Section */
     .products-section {
       padding: 80px 0;
       background-color: var(--secondary);
@@ -336,7 +330,6 @@
       margin-right: 10px;
     }
 
-    /* Testimonials Section */
     .testimonials-section {
       padding: 80px 0;
     }
@@ -393,7 +386,6 @@
       font-size: 0.875rem;
     }
 
-    /* CTA Section */
     .cta-section {
       padding: 80px 0;
       background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('assets/images/hero-bg.jpg') center/cover no-repeat;
@@ -416,7 +408,6 @@
       font-size: 1.125rem;
     }
 
-    /* Footer */
     footer {
       background-color: #222;
       color: #aaa;
@@ -500,7 +491,6 @@
       margin-top: 40px;
     }
 
-    /* Responsive */
     @media (max-width: 991.98px) {
       .hero-section {
         padding: 80px 0;
@@ -533,7 +523,6 @@
       }
     }
 
-    /* Animations */
     @keyframes fadeInUp {
       from {
         opacity: 0;
@@ -549,7 +538,6 @@
       animation: fadeInUp 0.6s ease forwards;
     }
 
-    /* Custom cursor on buttons and clickable elements */
     button, a, .btn {
       cursor: pointer;
     }
@@ -578,7 +566,7 @@
   <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
       <span class="btn btn-outline-light me-3" onclick="openSidebar()" aria-label="Open Sidebar Menu">☰</span>
-      <a class="navbar-brand" href="#">
+      <a class="navbar-brand" href="index.html">
         <img src="assets/images/logo.png" alt="Logo" width="40" height="40" class="me-2 rounded-circle" />
         Platinum MFB
       </a>
@@ -588,7 +576,7 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item">
-            <a class="nav-link active" href="#">Home</a>
+            <a class="nav-link" href="index.html">Home</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="about.html">About</a>
@@ -919,7 +907,6 @@
       document.getElementById("sidebar").setAttribute("aria-hidden", "true");
     }
 
-    // Add animation to elements
     document.addEventListener('DOMContentLoaded', function() {
       const animatedElements = document.querySelectorAll('.animate-fadeInUp');
       animatedElements.forEach((element, index) => {
