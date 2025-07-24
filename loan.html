@@ -69,6 +69,48 @@
     </div>
   </header>
 
+  <!-- Loan Types Section -->
+  <section class="features-section">
+    <div class="container">
+      <h2 class="section-title">Loan Types</h2>
+      <div class="row">
+        <div class="col-md-4 mb-4">
+          <div class="feature-item animate-fadeInUp">
+            <div class="feature-icon">
+              <i class="fas fa-user"></i>
+            </div>
+            <div class="feature-content">
+              <h3>Personal Loans</h3>
+              <p>Flexible loans for personal needs with competitive rates.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-4">
+          <div class="feature-item animate-fadeInUp">
+            <div class="feature-icon">
+              <i class="fas fa-briefcase"></i>
+            </div>
+            <div class="feature-content">
+              <h3>Business Loans</h3>
+              <p>Support your business growth with tailored financing.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-4">
+          <div class="feature-item animate-fadeInUp">
+            <div class="feature-icon">
+              <i class="fas fa-graduation-cap"></i>
+            </div>
+            <div class="feature-content">
+              <h3>Education Loans</h3>
+              <p>Invest in your education with affordable loan options.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Loan Form Section -->
   <section class="services-section" id="loan-form">
     <div class="container">
@@ -98,7 +140,7 @@
                   <label for="amount" class="form-label">Loan Amount</label>
                   <div class="input-group">
                     <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
-                    <input type="number" class="form-control" id="amount" name="amount" placeholder="Enter loan amount" required>
+                    <input type="number" class="form-control" id="amount" name="amount" placeholder="Enter loan amount" min="100" required>
                   </div>
                 </div>
                 <div class="col-md-6 mb-3">
@@ -119,6 +161,7 @@
                 <input class="form-check-input" type="checkbox" id="terms" name="terms" required>
                 <label class="form-check-label" for="terms">I agree to the <a href="terms.html">Terms & Conditions</a></label>
               </div>
+              <div id="form-message" class="mb-3"></div>
               <button type="submit" class="btn btn-primary w-100 py-2">Submit Application</button>
             </form>
           </div>
@@ -213,9 +256,26 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="scripts.js"></script>
   <script>
-    // Basic form validation (to be integrated with backend)
+    // Form validation and submission
     document.getElementById('loan-form').addEventListener('submit', async function(e) {
       e.preventDefault();
+      const fullName = document.getElementById('full-name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const amount = document.getElementById('amount').value;
+      const purpose = document.getElementById('purpose').value;
+      const terms = document.getElementById('terms').checked;
+      const messageDiv = document.getElementById('form-message');
+
+      if (!fullName || !email || !amount || !purpose || !terms) {
+        messageDiv.innerHTML = '<div class="alert alert-danger">All fields are required, including agreement to Terms & Conditions.</div>';
+        return;
+      }
+      if (amount < 100) {
+        messageDiv.innerHTML = '<div class="alert alert-danger">Loan amount must be at least $100.</div>';
+        return;
+      }
+
+      messageDiv.innerHTML = '<div class="alert alert-info">Submitting application...</div>';
       const formData = new FormData(this);
       try {
         const response = await fetch('/api/loan', {
@@ -223,10 +283,15 @@
           body: formData
         });
         const data = await response.json();
-        alert('Loan application submitted successfully!');
-        this.reset();
+        if (response.ok) {
+          messageDiv.innerHTML = '<div class="alert alert-success">Loan application submitted successfully!</div>';
+          this.reset();
+        } else {
+          messageDiv.innerHTML = '<div class="alert alert-danger">Error submitting application.</div>';
+        }
       } catch (error) {
-        alert('Error submitting application.');
+        console.error('Error submitting loan application:', error);
+        messageDiv.innerHTML = '<div class="alert alert-danger">Error submitting application.</div>';
       }
     });
   </script>
