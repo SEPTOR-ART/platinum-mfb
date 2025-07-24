@@ -69,6 +69,48 @@
     </div>
   </header>
 
+  <!-- Account Benefits Section -->
+  <section class="features-section">
+    <div class="container">
+      <h2 class="section-title">Account Benefits</h2>
+      <div class="row">
+        <div class="col-md-4 mb-4">
+          <div class="feature-item animate-fadeInUp">
+            <div class="feature-icon">
+              <i class="fas fa-money-bill-wave"></i>
+            </div>
+            <div class="feature-content">
+              <h3>Low Fees</h3>
+              <p>Enjoy minimal charges on transactions and maintenance.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-4">
+          <div class="feature-item animate-fadeInUp">
+            <div class="feature-icon">
+              <i class="fas fa-mobile-alt"></i>
+            </div>
+            <div class="feature-content">
+              <h3>Digital Banking</h3>
+              <p>Access your account anytime with our mobile app.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-4">
+          <div class="feature-item animate-fadeInUp">
+            <div class="feature-icon">
+              <i class="fas fa-shield-alt"></i>
+            </div>
+            <div class="feature-content">
+              <h3>Secure Transactions</h3>
+              <p>Bank with confidence using our advanced security features.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Application Form Section -->
   <section class="services-section" id="application-form">
     <div class="container">
@@ -98,7 +140,7 @@
                   <label for="phone" class="form-label">Phone Number</label>
                   <div class="input-group">
                     <span class="input-group-text"><i class="fas fa-phone"></i></span>
-                    <input type="tel" class="form-control" id="phone" name="phone" placeholder="Enter your phone number" required>
+                    <input type="tel" class="form-control" id="phone" name="phone" placeholder="Enter your phone number" pattern="[0-9]{10}" required>
                   </div>
                 </div>
                 <div class="col-md-6 mb-3">
@@ -125,9 +167,9 @@
                 <input class="form-check-input" type="checkbox" id="terms" name="terms" required>
                 <label class="form-check-label" for="terms">I agree to the <a href="terms.html">Terms & Conditions</a> and <a href="privacy.html">Privacy Policy</a></label>
               </div>
+              <div id="form-message" class="mt-3"></div>
               <button type="submit" class="btn btn-primary w-100 py-2">Submit Application</button>
             </form>
-            <div id="form-message" class="mt-3"></div>
           </div>
         </div>
       </div>
@@ -222,25 +264,35 @@
   <script>
     document.getElementById('account-form').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const full_name = document.getElementById('full-name').value;
-      const email = document.getElementById('email').value;
-      const phone = document.getElementById('phone').value;
-      const account_type = document.getElementById('account-type').value;
-      const address = document.getElementById('address').value;
+      const fullName = document.getElementById('full-name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const accountType = document.getElementById('account-type').value;
+      const address = document.getElementById('address').value.trim();
       const terms = document.getElementById('terms').checked;
       const messageDiv = document.getElementById('form-message');
 
-      if (!terms) {
-        messageDiv.innerHTML = '<div class="alert alert-danger">You must agree to the Terms & Conditions and Privacy Policy.</div>';
+      // Validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!fullName || !email || !phone || !accountType || !address || !terms) {
+        messageDiv.innerHTML = '<div class="alert alert-danger">All fields are required, including agreement to Terms & Conditions and Privacy Policy.</div>';
+        return;
+      }
+      if (!emailRegex.test(email)) {
+        messageDiv.innerHTML = '<div class="alert alert-danger">Please enter a valid email address.</div>';
+        return;
+      }
+      if (phone.length !== 10 || !/^\d+$/.test(phone)) {
+        messageDiv.innerHTML = '<div class="alert alert-danger">Phone number must be 10 digits.</div>';
         return;
       }
 
+      messageDiv.innerHTML = '<div class="alert alert-info">Submitting application...</div>';
       try {
-        console.log('Submitting account application:', { full_name, email, phone, account_type, address });
         const response = await fetch('http://localhost:5000/api/open-account', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ full_name, email, phone, account_type, address })
+          body: JSON.stringify({ full_name: fullName, email, phone, account_type: accountType, address })
         });
         const result = await response.json();
         if (response.ok) {
