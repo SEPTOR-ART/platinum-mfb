@@ -69,12 +69,54 @@
     </div>
   </header>
 
+  <!-- Why Work With Us Section -->
+  <section class="features-section">
+    <div class="container">
+      <h2 class="section-title">Why Work With Us?</h2>
+      <div class="row">
+        <div class="col-md-4 mb-4">
+          <div class="feature-item animate-fadeInUp">
+            <div class="feature-icon">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="feature-content">
+              <h3>Career Growth</h3>
+              <p>Opportunities for advancement and professional development.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-4">
+          <div class="feature-item animate-fadeInUp">
+            <div class="feature-icon">
+              <i class="fas fa-users"></i>
+            </div>
+            <div class="feature-content">
+              <h3>Supportive Team</h3>
+              <p>Work in a collaborative and inclusive environment.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-4">
+          <div class="feature-item animate-fadeInUp">
+            <i class="fas fa-balance-scale"></i>
+            <div class="feature-content">
+              <h3>Work-Life Balance</h3>
+              <p>Enjoy flexible schedules and wellness benefits.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Jobs Section -->
   <section class="services-section" id="jobs">
     <div class="container">
       <h2 class="section-title">Current Openings</h2>
       <div id="job-listings" class="row">
-        <!-- Jobs will be dynamically inserted here -->
+        <div class="col-12 text-center">
+          <p class="loading-text animate-fadeInUp">Loading job openings...</p>
+        </div>
       </div>
     </div>
   </section>
@@ -167,13 +209,15 @@
   <script>
     // Fetch job listings
     async function fetchJobs() {
+      const jobListings = document.getElementById('job-listings');
+      jobListings.innerHTML = '<div class="col-12 text-center"><p class="loading-text animate-fadeInUp">Loading job openings...</p></div>';
+
       try {
         const response = await fetch('/api/jobs');
         const jobs = await response.json();
-        const jobListings = document.getElementById('job-listings');
         jobListings.innerHTML = '';
         if (jobs.length === 0) {
-          jobListings.innerHTML = '<p class="text-center">No job openings at this time.</p>';
+          jobListings.innerHTML = '<p class="text-center animate-fadeInUp">No job openings at this time.</p>';
           return;
         }
         jobs.forEach(job => {
@@ -190,11 +234,15 @@
           jobListings.innerHTML += jobCard;
         });
       } catch (error) {
-        document.getElementById('job-listings').innerHTML = '<p class="text-center">Error loading jobs.</p>';
+        jobListings.innerHTML = `
+          <div class="col-12 text-center">
+            <p class="animate-fadeInUp">Error loading jobs. <a href="#" onclick="fetchJobs(); return false;">Retry</a></p>
+          </div>
+        `;
       }
     }
     // Load jobs on page load
-    fetchJobs();
+    document.addEventListener('DOMContentLoaded', fetchJobs);
   </script>
 </body>
 </html>
