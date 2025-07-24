@@ -33,13 +33,26 @@ const connectWithRetry = () => {
 };
 connectWithRetry();
 
-// Routes
+// Set strictQuery option to suppress Mongoose 7 deprecation warning
+mongoose.set('strictQuery', false);
+
+// Models
 const Account = require('./models/Account');
 const Contact = require('./models/Contact');
 const Loan = require('./models/Loan');
 const Job = require('./models/Job');
 const Faq = require('./models/Faq');
 const Investment = require('./models/Investment');
+
+// Routes
+
+// Root route for health check
+app.get('/', (req, res) => {
+  res.json({
+    message: 'Platinum MFB Backend is running',
+    endpoints: ['/api/open-account', '/api/contact', '/api/loan', '/api/jobs', '/api/faqs', '/api/investments']
+  });
+});
 
 // Open Account API
 app.post('/api/open-account', async (req, res) => {
