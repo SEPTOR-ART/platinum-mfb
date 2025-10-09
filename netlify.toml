@@ -1,0 +1,26 @@
+[build]
+  publish = "."
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = """
+    default-src 'self';
+    script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com;
+    style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com;
+    img-src 'self' data: https:;
+    font-src 'self' https://cdnjs.cloudflare.com;
+    connect-src 'self' https://platinum-mfb.onrender.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com;
+    """
+
+[[headers]]
+  for = "/admin.html"
+  [headers.values]
+    Content-Security-Policy = """
+    default-src 'self';
+    script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com;
+    style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com;
+    img-src 'self' data: https:;
+    font-src 'self' https://cdnjs.cloudflare.com;
+    connect-src 'self' https://platinum-mfb.onrender.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com;
+    """

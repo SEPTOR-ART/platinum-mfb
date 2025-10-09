@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: platinum-mfb
+    env: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: MONGODB_URI
+        sync: false
+      - key: CORS_ORIGIN
+        value: https://platinum-mfb.onrender.com
+      - key: NODE_ENV
+        value: production
+

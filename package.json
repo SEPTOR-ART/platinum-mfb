@@ -1,0 +1,36 @@
+{
+  "name": "platinum-mfb",
+  "version": "1.0.0",
+  "description": "Platinum Microfinance Bank - Full Stack Banking Website",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "cd backend && npm start",
+    "dev": "cd backend && npm run dev",
+    "install-deps": "cd backend && npm install",
+    "seed": "cd backend && node seed.js && node seed-investments.js && node seed-faqs.js",
+    "build": "echo 'Frontend is static - no build needed'",
+    "test": "echo 'No tests specified'"
+  },
+  "keywords": [
+    "banking",
+    "microfinance",
+    "nodejs",
+    "express",
+    "mongodb",
+    "responsive"
+  ],
+  "author": "Platinum MFB Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/platinum-mfb.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/platinum-mfb/issues"
+  },
+  "homepage": "https://github.com/yourusername/platinum-mfb#readme"
+}
