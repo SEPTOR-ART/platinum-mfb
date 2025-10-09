@@ -1,0 +1,59 @@
+Contact: mailto:security@platinummfb.com
+Expires: 2025-12-31T23:59:59.000Z
+Encryption: https://platinum-mfb.netlify.app/pgp-key.txt
+Acknowledgments: https://platinum-mfb.netlify.app/security-acknowledgments.txt
+Preferred-Languages: en
+Canonical: https://platinum-mfb.netlify.app/.well-known/security.txt
+Policy: https://platinum-mfb.netlify.app/security-policy.html
+
+# Security Policy for Platinum Microfinance Bank
+
+## Reporting Security Vulnerabilities
+
+We take security seriously at Platinum Microfinance Bank. If you discover a security vulnerability, please report it responsibly.
+
+### How to Report
+
+1. **Email**: Send details to security@platinummfb.com
+2. **Do NOT** publicly disclose the vulnerability until we have had a chance to address it
+3. Include as much detail as possible about the vulnerability
+4. Provide steps to reproduce if applicable
+
+### What to Include
+
+- Description of the vulnerability
+- Steps to reproduce
+- Potential impact
+- Any suggested fixes
+- Your contact information (optional)
+
+### Response Time
+
+We aim to:
+- Acknowledge receipt within 24 hours
+- Provide initial assessment within 72 hours
+- Keep you updated on our progress
+
+### Scope
+
+This security policy covers:
+- platinum-mfb.netlify.app
+- platinum-mfb.onrender.com
+- All related subdomains and services
+
+### Out of Scope
+
+- Social engineering attacks
+- Physical security issues
+- Issues requiring physical access to our premises
+
+### Recognition
+
+We appreciate responsible disclosure and may recognize security researchers who help us improve our security posture.
+
+Thank you for helping keep our customers and systems secure.
+
+---
+Platinum Microfinance Bank Limited
+Licensed by the Central Bank of Nigeria (CBN)
+160 Ziks Avenue, Awka, Anambra State, Nigeria

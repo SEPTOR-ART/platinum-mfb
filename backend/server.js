@@ -191,21 +191,31 @@ app.use((req, res, next) => {
   res.setHeader('X-Frame-Options', 'DENY');
   res.setHeader('X-XSS-Protection', '1; mode=block');
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
-  res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
+  res.setHeader('Permissions-Policy', 
+    'geolocation=(), microphone=(), camera=(), payment=(), usb=(), magnetometer=(), gyroscope=(), speaker=(), vibrate=(), fullscreen=(self), sync-xhr=()'
+  );
   
-  // Content Security Policy
+  // Enhanced Content Security Policy
   res.setHeader('Content-Security-Policy', 
     "default-src 'self'; " +
     "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; " +
     "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; " +
-    "img-src 'self' data: https:; " +
-    "font-src 'self' https://cdnjs.cloudflare.com; " +
-    "connect-src 'self' https://platinum-mfb.onrender.com; " +
-    "frame-ancestors 'none'"
+    "img-src 'self' data: https: blob:; " +
+    "font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; " +
+    "connect-src 'self' https://platinum-mfb.onrender.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; " +
+    "media-src 'self'; " +
+    "object-src 'none'; " +
+    "base-uri 'self'; " +
+    "form-action 'self'; " +
+    "frame-ancestors 'none'; " +
+    "upgrade-insecure-requests; " +
+    "block-all-mixed-content"
   );
   
   // Strict Transport Security (HSTS)
   res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+  res.setHeader('X-DNS-Prefetch-Control', 'off');
+  res.removeHeader('X-Powered-By');
   
   next();
 });

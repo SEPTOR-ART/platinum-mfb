@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Policy - Platinum Microfinance Bank</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #28a745;
+            --primary-dark: #1e7e34;
+            --secondary: #20c997;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .security-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 4rem 0;
+        }
+
+        .security-content {
+            padding: 4rem 0;
+        }
+
+        .security-card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            margin-bottom: 2rem;
+        }
+
+        .security-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .contact-info {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .alert-security {
+            border-left: 4px solid var(--primary);
+            background: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="security-header">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center">
+                    <h1 class="display-4 mb-3">
+                        <i class="fas fa-shield-alt me-3"></i>Security Policy
+                    </h1>
+                    <p class="lead">Platinum Microfinance Bank Limited - Security & Vulnerability Disclosure</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="security-content">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <!-- Overview -->
+                    <div class="card security-card">
+                        <div class="card-body">
+                            <div class="security-icon">
+                                <i class="fas fa-info-circle"></i>
+                            </div>
+                            <h3>Security Overview</h3>
+                            <p class="text-muted">
+                                At Platinum Microfinance Bank, we take security seriously. We are committed to maintaining 
+                                the highest standards of security for our digital platforms and customer data.
+                            </p>
+                            <p>
+                                This security policy outlines how we handle security vulnerabilities and provides 
+                                guidelines for responsible disclosure.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Reporting Vulnerabilities -->
+                    <div class="card security-card">
+                        <div class="card-body">
+                            <div class="security-icon">
+                                <i class="fas fa-bug"></i>
+                            </div>
+                            <h3>Reporting Security Vulnerabilities</h3>
+                            <p>If you discover a security vulnerability, please report it responsibly:</p>
+                            
+                            <div class="alert alert-security">
+                                <h5><i class="fas fa-envelope me-2"></i>Contact Information</h5>
+                                <p class="mb-1"><strong>Email:</strong> security@platinummfb.com</p>
+                                <p class="mb-0"><strong>Response Time:</strong> We aim to acknowledge within 24 hours</p>
+                            </div>
+
+                            <h5>What to Include in Your Report:</h5>
+                            <ul>
+                                <li>Description of the vulnerability</li>
+                                <li>Steps to reproduce the issue</li>
+                                <li>Potential impact assessment</li>
+                                <li>Any suggested fixes or mitigations</li>
+                                <li>Your contact information (optional)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Guidelines -->
+                    <div class="card security-card">
+                        <div class="card-body">
+                            <div class="security-icon">
+                                <i class="fas fa-clipboard-list"></i>
+                            </div>
+                            <h3>Responsible Disclosure Guidelines</h3>
+                            
+                            <h5>Please Do:</h5>
+                            <ul class="text-success">
+                                <li>Report vulnerabilities responsibly and privately</li>
+                                <li>Allow reasonable time for us to address the issue</li>
+                                <li>Act in good faith to avoid privacy violations and service disruption</li>
+                                <li>Provide clear, detailed reports</li>
+                                <li>Respect our customers' privacy and data</li>
+                            </ul>
+
+                            <h5>Please Don't:</h5>
+                            <ul class="text-danger">
+                                <li>Publicly disclose vulnerabilities before we have a chance to fix them</li>
+                                <li>Access, modify, or destroy data that doesn't belong to you</li>
+                                <li>Disrupt our services or systems</li>
+                                <li>Use social engineering, phishing, or physical attacks</li>
+                                <li>Violate any laws or regulations</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Scope -->
+                    <div class="card security-card">
+                        <div class="card-body">
+                            <div class="security-icon">
+                                <i class="fas fa-globe"></i>
+                            </div>
+                            <h3>Scope of Security Policy</h3>
+                            
+                            <h5>In Scope:</h5>
+                            <ul>
+                                <li>platinum-mfb.netlify.app (main website)</li>
+                                <li>platinum-mfb.onrender.com (API services)</li>
+                                <li>All related subdomains and services</li>
+                                <li>Customer-facing applications and APIs</li>
+                                <li>Admin portals and management systems</li>
+                            </ul>
+
+                            <h5>Out of Scope:</h5>
+                            <ul class="text-muted">
+                                <li>Social engineering attacks</li>
+                                <li>Physical security issues</li>
+                                <li>Issues requiring physical access to our premises</li>
+                                <li>Third-party services we don't control</li>
+                                <li>Denial of service attacks</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Recognition -->
+                    <div class="card security-card">
+                        <div class="card-body">
+                            <div class="security-icon">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                            <h3>Recognition</h3>
+                            <p>
+                                We appreciate security researchers who help us improve our security posture through 
+                                responsible disclosure. While we don't currently operate a formal bug bounty program, 
+                                we may recognize researchers who provide valuable security insights.
+                            </p>
+                            <p>
+                                Recognition may include acknowledgment in our security advisories or other appropriate 
+                                recognition as agreed upon.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Contact Information -->
+                    <div class="contact-info">
+                        <h4><i class="fas fa-building me-2"></i>Platinum Microfinance Bank Limited</h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Address:</strong><br>
+                                160 Ziks Avenue<br>
+                                Awka, Anambra State<br>
+                                Nigeria</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Contact:</strong><br>
+                                Phone: 08154404040, 09017000710<br>
+                                Email: info@platinummfb.com<br>
+                                Security: security@platinummfb.com</p>
+                            </div>
+                        </div>
+                        <hr>
+                        <p class="text-muted mb-0">
+                            <small>
+                                Licensed by the Central Bank of Nigeria (CBN)<br>
+                                RC Number: 7155803<br>
+                                Last Updated: December 2024
+                            </small>
+                        </p>
+                    </div>
+
+                    <!-- Back to Home -->
+                    <div class="text-center mt-4">
+                        <a href="index.html" class="btn btn-primary btn-lg">
+                            <i class="fas fa-home me-2"></i>Back to Home
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4">
+        <div class="container text-center">
+            <p class="mb-0">&copy; 2024 Platinum Microfinance Bank Limited. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
