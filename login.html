@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Platinum Microfinance Bank</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #28a745;
+            --primary-dark: #1e7e34;
+            --secondary: #20c997;
+            --text-dark: #333;
+            --text-light: #666;
+        }
+
+        body {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            width: 100%;
+            max-width: 900px;
+            min-height: 500px;
+        }
+
+        .login-left {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .login-logo {
+            width: 80px;
+            height: 80px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .login-right {
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .form-control {
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+        }
+
+        .btn-login {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            border: none;
+            border-radius: 10px;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(40, 167, 69, 0.3);
+            background: linear-gradient(135deg, #1e7e34, #17a2b8);
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group-text {
+            background: transparent;
+            border: 2px solid #e9ecef;
+            border-right: none;
+            border-radius: 10px 0 0 10px;
+            color: var(--text-light);
+        }
+
+        .form-control.with-icon {
+            border-left: none;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .security-features {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .security-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .security-item i {
+            margin-right: 0.5rem;
+            color: #20c997;
+        }
+
+        .alert {
+            border-radius: 10px;
+            border: none;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .loading-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            border-width: 0.3em;
+        }
+
+        @media (max-width: 768px) {
+            .login-container {
+                margin: 1rem;
+                max-width: none;
+            }
+            
+            .login-left {
+                padding: 2rem 1rem;
+            }
+            
+            .login-right {
+                padding: 2rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="row g-0 h-100">
+            <!-- Left Side - Branding -->
+            <div class="col-md-5 login-left">
+                <div class="login-logo">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h2 class="mb-3">Platinum MFB</h2>
+                <h4 class="mb-4">Admin Portal</h4>
+                <p class="mb-4">Secure access to your banking dashboard and customer management system.</p>
+                
+                <div class="security-features">
+                    <h6 class="mb-3"><i class="fas fa-lock me-2"></i>Security Features</h6>
+                    <div class="security-item">
+                        <i class="fas fa-check"></i>
+                        <span>256-bit SSL Encryption</span>
+                    </div>
+                    <div class="security-item">
+                        <i class="fas fa-check"></i>
+                        <span>Session Management</span>
+                    </div>
+                    <div class="security-item">
+                        <i class="fas fa-check"></i>
+                        <span>Secure Authentication</span>
+                    </div>
+                    <div class="security-item">
+                        <i class="fas fa-check"></i>
+                        <span>Activity Monitoring</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Side - Login Form -->
+            <div class="col-md-7 login-right">
+                <div class="text-center mb-4">
+                    <h3 class="text-dark mb-2">Welcome Back</h3>
+                    <p class="text-muted">Please sign in to access the admin dashboard</p>
+                </div>
+                
+                <div id="alert-container"></div>
+                
+                <form id="loginForm">
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-user"></i>
+                        </span>
+                        <input type="text" class="form-control with-icon" id="username" name="username" 
+                               placeholder="Enter your username" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-lock"></i>
+                        </span>
+                        <input type="password" class="form-control with-icon" id="password" name="password" 
+                               placeholder="Enter your password" required>
+                        <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="rememberMe">
+                        <label class="form-check-label" for="rememberMe">
+                            Remember me for 30 days
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-login btn-lg">
+                        <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                    </button>
+                </form>
+                
+                <div class="text-center mt-4">
+                    <small class="text-muted">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Contact system administrator for access credentials
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="spinner-border text-success mb-3" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <h5>Authenticating...</h5>
+            <p class="text-muted">Please wait while we verify your credentials</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Toggle password visibility
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordField = document.getElementById('password');
+            const icon = this.querySelector('i');
+            
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordField.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+
+        // Show alert function
+        function showAlert(message, type = 'danger') {
+            const alertContainer = document.getElementById('alert-container');
+            const alertId = 'alert-' + Date.now();
+            
+            alertContainer.innerHTML = `
+                <div id="${alertId}" class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    <i class="fas fa-${type === 'danger' ? 'exclamation-triangle' : 'check-circle'} me-2"></i>
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            
+            // Auto dismiss after 5 seconds
+            setTimeout(() => {
+                const alert = document.getElementById(alertId);
+                if (alert) {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                }
+            }, 5000);
+        }
+
+        // Show loading overlay
+        function showLoading() {
+            document.getElementById('loadingOverlay').style.display = 'flex';
+        }
+
+        // Hide loading overlay
+        function hideLoading() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }
+
+        // Check if already logged in
+        function checkAuthStatus() {
+            const token = localStorage.getItem('admin_token');
+            const expires = localStorage.getItem('admin_expires');
+            
+            if (token && expires && new Date() < new Date(expires)) {
+                // Already logged in, redirect to admin
+                window.location.href = 'admin.html';
+            }
+        }
+
+        // Login form submission
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+            
+            // Basic validation
+            if (!username || !password) {
+                showAlert('Please enter both username and password.');
+                return;
+            }
+            
+            showLoading();
+            
+            try {
+                const response = await fetch('https://platinum-mfb.onrender.com/api/admin/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        password: password,
+                        remember: rememberMe
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    // Store authentication token
+                    const expires = rememberMe ? 
+                        new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) : // 30 days
+                        new Date(Date.now() + 24 * 60 * 60 * 1000); // 1 day
+                    
+                    localStorage.setItem('admin_token', data.token);
+                    localStorage.setItem('admin_expires', expires.toISOString());
+                    localStorage.setItem('admin_username', username);
+                    
+                    showAlert('Login successful! Redirecting to admin dashboard...', 'success');
+                    
+                    // Redirect after short delay
+                    setTimeout(() => {
+                        window.location.href = 'admin.html';
+                    }, 1500);
+                    
+                } else {
+                    hideLoading();
+                    showAlert(data.message || 'Invalid username or password. Please try again.');
+                }
+                
+            } catch (error) {
+                hideLoading();
+                console.error('Login error:', error);
+                showAlert('Connection error. Please check your internet connection and try again.');
+            }
+        });
+
+        // Check authentication status on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthStatus();
+            
+            // Focus on username field
+            document.getElementById('username').focus();
+        });
+
+        // Handle Enter key in password field
+        document.getElementById('password').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+            }
+        });
+    </script>
+</body>
+</html>

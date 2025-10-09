@@ -6,6 +6,8 @@ const path = require('path');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const fs = require('fs');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
 // Load environment variables
 dotenv.config();
@@ -21,6 +23,10 @@ if (!process.env.CORS_ORIGIN) {
 
 if (!process.env.PORT) {
   process.env.PORT = process.env.RENDER ? 10000 : 5000;
+}
+
+if (!process.env.JWT_SECRET) {
+  process.env.JWT_SECRET = 'platinum-mfb-admin-secret-key-2024';
 }
 
 // Fallback file storage for when database is not available
@@ -142,9 +148,117 @@ const Loan = require('./models/Loan');
 const Job = require('./models/Job');
 const Faq = require('./models/Faq');
 const Investment = require('./models/Investment');
+const Admin = require('./models/Admin');
 const InvestmentApplication = require('./models/InvestmentApplication');
 
+// Authentication middleware
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) {
+    return res.status(401).json({ success: false, message: 'Access token required' });
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) {
+      return res.status(403).json({ success: false, message: 'Invalid or expired token' });
+    }
+    req.user = user;
+    next();
+  });
+};
+
 // Routes
+
+// Admin Login Route
+app.post('/api/admin/login', async (req, res) => {
+  try {
+    const { username, password, remember } = req.body;
+
+    if (!username || !password) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Username and password are required' 
+      });
+    }
+
+    // Find admin user
+    const admin = await Admin.findOne({ username, isActive: true });
+
+    if (!admin) {
+      return res.status(401).json({ 
+        success: false, 
+        message: 'Invalid username or password' 
+      });
+    }
+
+    // Check if account is locked
+    if (admin.isLocked) {
+      return res.status(423).json({ 
+        success: false, 
+        message: 'Account is temporarily locked due to too many failed login attempts. Please try again later.' 
+      });
+    }
+
+    // Compare password
+    const isPasswordValid = await admin.comparePassword(password);
+
+    if (!isPasswordValid) {
+      // Increment login attempts
+      await admin.incLoginAttempts();
+      
+      return res.status(401).json({ 
+        success: false, 
+        message: 'Invalid username or password' 
+      });
+    }
+
+    // Reset login attempts and update last login
+    await admin.resetLoginAttempts();
+    await admin.updateLastLogin();
+
+    // Generate JWT token
+    const tokenExpiry = remember ? '30d' : '24h';
+    const token = jwt.sign(
+      { 
+        id: admin._id, 
+        username: admin.username, 
+        role: admin.role 
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: tokenExpiry }
+    );
+
+    res.json({
+      success: true,
+      message: 'Login successful',
+      token: token,
+      user: {
+        id: admin._id,
+        username: admin.username,
+        email: admin.email,
+        fullName: admin.fullName,
+        role: admin.role
+      }
+    });
+
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Internal server error' 
+    });
+  }
+});
+
+// Verify Token Route
+app.get('/api/admin/verify', authenticateToken, (req, res) => {
+  res.json({
+    success: true,
+    user: req.user
+  });
+});
 
 // Health route
 app.get('/api/health', (req, res) => {
@@ -427,7 +541,7 @@ app.get('/api/analytics', async (req, res) => {
 });
 
 // Admin endpoints to view submitted forms
-app.get('/api/admin/accounts', async (req, res) => {
+app.get('/api/admin/accounts', authenticateToken, async (req, res) => {
   try {
     // Try database first
     try {
@@ -454,7 +568,7 @@ app.get('/api/admin/accounts', async (req, res) => {
   }
 });
 
-app.get('/api/admin/contacts', async (req, res) => {
+app.get('/api/admin/contacts', authenticateToken, async (req, res) => {
   try {
     // Try database first
     try {
@@ -481,7 +595,7 @@ app.get('/api/admin/contacts', async (req, res) => {
   }
 });
 
-app.get('/api/admin/loans', async (req, res) => {
+app.get('/api/admin/loans', authenticateToken, async (req, res) => {
   try {
     // Try database first
     try {
@@ -508,7 +622,7 @@ app.get('/api/admin/loans', async (req, res) => {
   }
 });
 
-app.get('/api/admin/investment-applications', async (req, res) => {
+app.get('/api/admin/investment-applications', authenticateToken, async (req, res) => {
   try {
     // Try database first
     try {
@@ -536,7 +650,7 @@ app.get('/api/admin/investment-applications', async (req, res) => {
 });
 
 // File-based data endpoints (fallback data)
-app.get('/api/admin/file-data', (req, res) => {
+app.get('/api/admin/file-data', authenticateToken, (req, res) => {
   try {
     const dataDir = path.join(__dirname, 'data');
     const fileData = {};
