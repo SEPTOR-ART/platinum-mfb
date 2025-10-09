@@ -353,9 +353,9 @@
                     <td>${account.full_name}</td>
                     <td>${account.email}</td>
                     <td>${account.phone}</td>
-                    <td><span class="badge bg-primary">${account.account_type.replace('-', ' ')}</span></td>
-                    <td>₦${Number(account.initial_deposit).toLocaleString()}</td>
-                    <td>${account.occupation}</td>
+                    <td><span class="badge bg-primary">${account.account_type ? account.account_type.replace('-', ' ') : 'N/A'}</span></td>
+                    <td>₦${account.initial_deposit ? Number(account.initial_deposit).toLocaleString() : 'N/A'}</td>
+                    <td>${account.occupation || 'N/A'}</td>
                     <td><span class="badge bg-${getStatusColor(account.status)}">${account.status}</span></td>
                     <td>${new Date(account.created_at).toLocaleDateString()}</td>
                 </tr>
@@ -380,7 +380,7 @@
                 <tr>
                     <td>${contact.name}</td>
                     <td>${contact.email}</td>
-                    <td><span class="badge bg-info">${contact.subject.replace('-', ' ')}</span></td>
+                    <td><span class="badge bg-info">${contact.subject ? contact.subject.replace('-', ' ') : 'General'}</span></td>
                     <td>${contact.message.length > 50 ? contact.message.substring(0, 50) + '...' : contact.message}</td>
                     <td><span class="badge bg-${getStatusColor(contact.status)}">${contact.status}</span></td>
                     <td>${new Date(contact.created_at).toLocaleDateString()}</td>
@@ -432,9 +432,9 @@
                 <tr>
                     <td>${investment.full_name}</td>
                     <td>${investment.email}</td>
-                    <td><span class="badge bg-info">${investment.investment_type.replace('-', ' ')}</span></td>
+                    <td><span class="badge bg-info">${investment.investment_type ? investment.investment_type.replace('-', ' ') : 'N/A'}</span></td>
                     <td>₦${Number(investment.amount).toLocaleString()}</td>
-                    <td>${investment.duration.replace('-', ' ')}</td>
+                    <td>${investment.duration ? investment.duration.replace('-', ' ') : 'N/A'}</td>
                     <td><span class="badge bg-${getStatusColor(investment.status)}">${investment.status}</span></td>
                     <td>${new Date(investment.created_at).toLocaleDateString()}</td>
                 </tr>
