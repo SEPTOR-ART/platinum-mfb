@@ -110,7 +110,10 @@ app.use(cors({
     
     return callback(new Error('Not allowed by CORS'));
   },
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  optionsSuccessStatus: 200
 }));
 app.use(helmet());
 const apiLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 300 });
@@ -293,17 +296,22 @@ app.get('/api/admin/verify', authenticateToken, (req, res) => {
 
 // Create Admin User Route (for initial setup)
 app.post('/api/admin/create-admin', async (req, res) => {
+  console.log('Create admin endpoint hit');
+  
   try {
     // Check if any admin exists
     const existingAdmin = await Admin.findOne();
     
     if (existingAdmin) {
+      console.log('Admin already exists:', existingAdmin.username);
       return res.status(400).json({ 
         success: false, 
         message: 'Admin user already exists' 
       });
     }
 
+    console.log('Creating new admin user...');
+    
     // Create new admin user
     const admin = new Admin({
       username: 'admin',
@@ -315,6 +323,7 @@ app.post('/api/admin/create-admin', async (req, res) => {
     });
 
     await admin.save();
+    console.log('Admin user created successfully');
     
     res.json({
       success: true,
@@ -329,9 +338,18 @@ app.post('/api/admin/create-admin', async (req, res) => {
     console.error('Error creating admin:', error);
     res.status(500).json({ 
       success: false, 
-      message: 'Error creating admin user' 
+      message: 'Error creating admin user: ' + error.message 
     });
   }
+});
+
+// Test endpoint to verify server is working
+app.get('/api/test', (req, res) => {
+  res.json({ 
+    message: 'Server is working!', 
+    timestamp: new Date().toISOString(),
+    cors: 'CORS should be working'
+  });
 });
 
 // Health route
