@@ -255,6 +255,10 @@
                         <i class="fas fa-info-circle me-1"></i>
                         Contact system administrator for access credentials
                     </small>
+                    <br>
+                    <button class="btn btn-link btn-sm mt-2" onclick="createAdmin()" id="createAdminBtn">
+                        <i class="fas fa-user-plus me-1"></i>Create Admin User (First Time Setup)
+                    </button>
                 </div>
             </div>
         </div>
@@ -407,6 +411,46 @@
                 document.getElementById('loginForm').dispatchEvent(new Event('submit'));
             }
         });
+
+        // Create admin user function
+        async function createAdmin() {
+            const createBtn = document.getElementById('createAdminBtn');
+            const originalText = createBtn.innerHTML;
+            
+            createBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Creating Admin...';
+            createBtn.disabled = true;
+            
+            try {
+                const response = await fetch('https://platinum-mfb.onrender.com/api/admin/create-admin', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    showAlert('Admin user created successfully! You can now login with:<br><strong>Username:</strong> admin<br><strong>Password:</strong> admin123', 'success');
+                    
+                    // Auto-fill the form
+                    document.getElementById('username').value = 'admin';
+                    document.getElementById('password').value = 'admin123';
+                    
+                    // Hide the create admin button
+                    createBtn.style.display = 'none';
+                } else {
+                    showAlert(data.message || 'Failed to create admin user');
+                }
+                
+            } catch (error) {
+                console.error('Create admin error:', error);
+                showAlert('Connection error. Please check your internet connection and try again.');
+            } finally {
+                createBtn.innerHTML = originalText;
+                createBtn.disabled = false;
+            }
+        }
     </script>
 </body>
 </html>

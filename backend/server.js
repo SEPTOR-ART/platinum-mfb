@@ -129,7 +129,11 @@ const dbOptions = {
 // Connect to MongoDB with retry logic
 const connectWithRetry = () => {
   mongoose.connect(process.env.MONGODB_URI, dbOptions)
-    .then(() => console.log('Connected to MongoDB'))
+    .then(async () => {
+      console.log('Connected to MongoDB');
+      // Create default admin user after connection
+      await createDefaultAdmin();
+    })
     .catch(err => {
       console.error('MongoDB connection error:', err.message);
       console.log('Retrying connection in 5 seconds...');
@@ -140,6 +144,33 @@ connectWithRetry();
 
 // Set strictQuery option to suppress Mongoose 7 deprecation warning
 mongoose.set('strictQuery', false);
+
+// Create default admin user if none exists
+async function createDefaultAdmin() {
+  try {
+    const existingAdmin = await Admin.findOne({ username: 'admin' });
+    
+    if (!existingAdmin) {
+      const admin = new Admin({
+        username: 'admin',
+        password: 'admin123',
+        email: 'admin@platinummfb.com',
+        fullName: 'System Administrator',
+        role: 'super_admin',
+        isActive: true
+      });
+
+      await admin.save();
+      console.log('✅ Default admin user created successfully!');
+      console.log('🔐 Username: admin | Password: admin123');
+      console.log('⚠️  Please change the password after first login!');
+    } else {
+      console.log('ℹ️  Admin user already exists');
+    }
+  } catch (error) {
+    console.error('❌ Error creating default admin:', error.message);
+  }
+}
 
 // Models
 const Account = require('./models/Account');
@@ -258,6 +289,49 @@ app.get('/api/admin/verify', authenticateToken, (req, res) => {
     success: true,
     user: req.user
   });
+});
+
+// Create Admin User Route (for initial setup)
+app.post('/api/admin/create-admin', async (req, res) => {
+  try {
+    // Check if any admin exists
+    const existingAdmin = await Admin.findOne();
+    
+    if (existingAdmin) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Admin user already exists' 
+      });
+    }
+
+    // Create new admin user
+    const admin = new Admin({
+      username: 'admin',
+      password: 'admin123',
+      email: 'admin@platinummfb.com',
+      fullName: 'System Administrator',
+      role: 'super_admin',
+      isActive: true
+    });
+
+    await admin.save();
+    
+    res.json({
+      success: true,
+      message: 'Admin user created successfully',
+      credentials: {
+        username: 'admin',
+        password: 'admin123'
+      }
+    });
+
+  } catch (error) {
+    console.error('Error creating admin:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Error creating admin user' 
+    });
+  }
 });
 
 // Health route
