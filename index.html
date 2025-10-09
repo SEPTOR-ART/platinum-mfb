@@ -70,9 +70,16 @@
       left: 0;
       background-color: #fff;
       overflow-x: hidden;
-      transition: 0.3s;
-      box-shadow: 3px 0 15px rgba(0, 0, 0, 0.1);
+      transition: width 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.3s ease, transform 0.3s ease;
+      box-shadow: 3px 0 20px rgba(0, 0, 0, 0.15);
       padding-top: 60px;
+      opacity: 0;
+      transform: translateX(-10px);
+    }
+
+    .sidebar.open {
+      opacity: 1;
+      transform: translateX(0);
     }
 
     .sidebar a {
@@ -598,18 +605,7 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="index.html">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="about.html">About</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="services.html">Services</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="contact.html">Contact</a>
-          </li>
+          <!-- Navigation links moved to sidebar for better mobile experience -->
         </ul>
       </div>
     </div>
@@ -927,13 +923,49 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     function openSidebar() {
-      document.getElementById("sidebar").style.width = "250px";
-      document.getElementById("sidebar").setAttribute("aria-hidden", "false");
+      const sidebar = document.getElementById("sidebar");
+      sidebar.style.width = "250px";
+      sidebar.classList.add("open");
+      sidebar.setAttribute("aria-hidden", "false");
+      
+      // Add backdrop overlay
+      const overlay = document.createElement('div');
+      overlay.id = 'sidebar-overlay';
+      overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1040;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      `;
+      overlay.onclick = closeSidebar;
+      document.body.appendChild(overlay);
+      
+      // Fade in overlay
+      setTimeout(() => overlay.style.opacity = '1', 10);
     }
 
     function closeSidebar() {
-      document.getElementById("sidebar").style.width = "0";
-      document.getElementById("sidebar").setAttribute("aria-hidden", "true");
+      const sidebar = document.getElementById("sidebar");
+      const overlay = document.getElementById("sidebar-overlay");
+      
+      sidebar.classList.remove("open");
+      sidebar.setAttribute("aria-hidden", "true");
+      
+      // Fade out overlay
+      if (overlay) {
+        overlay.style.opacity = '0';
+        setTimeout(() => overlay.remove(), 300);
+      }
+      
+      // Close sidebar after animation
+      setTimeout(() => {
+        sidebar.style.width = "0";
+      }, 200);
     }
 
     document.addEventListener('DOMContentLoaded', function() {
