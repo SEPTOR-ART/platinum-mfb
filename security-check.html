@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Check - Platinum MFB</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f8f9fa;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .warning { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        h1 { color: #28a745; text-align: center; }
+        .check-item { margin: 15px 0; }
+        .btn {
+            background: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px 5px;
+        }
+        .btn:hover { background: #218838; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Security Diagnostic Tool</h1>
+        <p>This tool checks the security status of your Platinum MFB website.</p>
+        
+        <div id="results">
+            <div class="check-item">
+                <h3>🔒 Protocol Check</h3>
+                <div id="protocol-status" class="status info">Checking...</div>
+            </div>
+            
+            <div class="check-item">
+                <h3>🌐 Domain Check</h3>
+                <div id="domain-status" class="status info">Checking...</div>
+            </div>
+            
+            <div class="check-item">
+                <h3>📋 Security Headers Check</h3>
+                <div id="headers-status" class="status info">Checking...</div>
+            </div>
+            
+            <div class="check-item">
+                <h3>🔗 Mixed Content Check</h3>
+                <div id="mixed-content-status" class="status info">Checking...</div>
+            </div>
+            
+            <div class="check-item">
+                <h3>🎯 CSP Check</h3>
+                <div id="csp-status" class="status info">Checking...</div>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="index.html" class="btn">🏠 Home Page</a>
+            <a href="admin.html" class="btn">👤 Admin Dashboard</a>
+            <a href="security-policy.html" class="btn">🛡️ Security Policy</a>
+        </div>
+    </div>
+
+    <script>
+        // Security diagnostic checks
+        function runSecurityChecks() {
+            // Protocol Check
+            const protocol = window.location.protocol;
+            const protocolDiv = document.getElementById('protocol-status');
+            if (protocol === 'https:') {
+                protocolDiv.className = 'status success';
+                protocolDiv.innerHTML = '✅ HTTPS is active - Secure connection established';
+            } else {
+                protocolDiv.className = 'status error';
+                protocolDiv.innerHTML = '❌ HTTP detected - Insecure connection';
+            }
+            
+            // Domain Check
+            const domain = window.location.hostname;
+            const domainDiv = document.getElementById('domain-status');
+            if (domain.includes('platinummfb.netlify.app') || domain.includes('localhost')) {
+                domainDiv.className = 'status success';
+                domainDiv.innerHTML = `✅ Valid domain: ${domain}`;
+            } else {
+                domainDiv.className = 'status warning';
+                domainDiv.innerHTML = `⚠️ Domain: ${domain}`;
+            }
+            
+            // Security Headers Check (simplified)
+            const headersDiv = document.getElementById('headers-status');
+            const hasCSP = document.querySelector('meta[http-equiv="Content-Security-Policy"]') || 
+                          document.querySelector('meta[http-equiv="X-Frame-Options"]');
+            
+            if (hasCSP) {
+                headersDiv.className = 'status success';
+                headersDiv.innerHTML = '✅ Security headers detected';
+            } else {
+                headersDiv.className = 'status warning';
+                headersDiv.innerHTML = '⚠️ Limited security headers detected';
+            }
+            
+            // Mixed Content Check
+            const mixedContentDiv = document.getElementById('mixed-content-status');
+            const images = document.querySelectorAll('img');
+            const scripts = document.querySelectorAll('script');
+            let hasMixedContent = false;
+            
+            [...images, ...scripts].forEach(element => {
+                if (element.src && element.src.startsWith('http:')) {
+                    hasMixedContent = true;
+                }
+            });
+            
+            if (!hasMixedContent) {
+                mixedContentDiv.className = 'status success';
+                mixedContentDiv.innerHTML = '✅ No mixed content detected';
+            } else {
+                mixedContentDiv.className = 'status error';
+                mixedContentDiv.innerHTML = '❌ Mixed content detected - HTTP resources on HTTPS page';
+            }
+            
+            // CSP Check
+            const cspDiv = document.getElementById('csp-status');
+            const cspMeta = document.querySelector('meta[http-equiv="Content-Security-Policy"]');
+            if (cspMeta && cspMeta.content.includes('upgrade-insecure-requests')) {
+                cspDiv.className = 'status success';
+                cspDiv.innerHTML = '✅ Content Security Policy is active with HTTPS upgrade';
+            } else {
+                cspDiv.className = 'status warning';
+                cspDiv.innerHTML = '⚠️ Limited CSP configuration';
+            }
+        }
+        
+        // Run checks when page loads
+        document.addEventListener('DOMContentLoaded', runSecurityChecks);
+        
+        // Additional browser security info
+        console.log('=== Platinum MFB Security Check ===');
+        console.log('Protocol:', window.location.protocol);
+        console.log('Domain:', window.location.hostname);
+        console.log('User Agent:', navigator.userAgent);
+        console.log('Secure Context:', window.isSecureContext);
+        console.log('=== End Security Check ===');
+    </script>
+</body>
+</html>
