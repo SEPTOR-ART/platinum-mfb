@@ -395,11 +395,31 @@
             border: 2px solid #e9ecef;
             padding: 0.5rem 1rem;
             transition: all 0.3s ease;
+            background: white;
         }
         
         .admin-search input:focus {
             border-color: #28a745;
             box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+            background: white;
+        }
+        
+        .admin-search input::placeholder {
+            color: #6c757d;
+            font-style: italic;
+        }
+        
+        /* Search result counter */
+        .search-counter {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
+        
+        .search-counter.highlight {
+            color: #28a745;
+            font-weight: 500;
         }
         
         /* Responsive Improvements */
@@ -462,6 +482,9 @@
                         </button>
                         <button class="btn btn-outline-light btn-lg me-2" onclick="exportData()">
                             <i class="fas fa-download me-2"></i>Export
+                        </button>
+                        <button class="btn btn-outline-light btn-lg me-2" onclick="clearAllSearches()">
+                            <i class="fas fa-search-minus me-2"></i>Clear Searches
                         </button>
                         <button class="btn btn-outline-light btn-lg" onclick="logout()">
                             <i class="fas fa-sign-out-alt me-2"></i>Logout
@@ -632,6 +655,7 @@
                     <h3 class="mb-0"><i class="fas fa-user-plus me-2"></i>Account Applications</h3>
                     <div class="admin-search">
                         <input type="text" id="accounts-search" class="form-control" placeholder="Search accounts..." style="width: 250px;">
+                        <div id="accounts-counter" class="search-counter"></div>
                     </div>
                 </div>
             </div>
@@ -670,7 +694,13 @@
         <!-- Contact Messages -->
         <div class="card">
             <div class="card-header">
-                <h3 class="mb-0"><i class="fas fa-envelope me-2"></i>Contact Messages</h3>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0"><i class="fas fa-envelope me-2"></i>Contact Messages</h3>
+                    <div class="admin-search">
+                        <input type="text" id="contacts-search" class="form-control" placeholder="Search contacts..." style="width: 250px;">
+                        <div id="contacts-counter" class="search-counter"></div>
+                    </div>
+                </div>
             </div>
             <div class="card-body">
                 <div id="contacts-loading" class="loading">
@@ -705,7 +735,13 @@
         <!-- Loan Applications -->
         <div class="card">
             <div class="card-header">
-                <h3 class="mb-0"><i class="fas fa-hand-holding-usd me-2"></i>Loan Applications</h3>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0"><i class="fas fa-hand-holding-usd me-2"></i>Loan Applications</h3>
+                    <div class="admin-search">
+                        <input type="text" id="loans-search" class="form-control" placeholder="Search loans..." style="width: 250px;">
+                        <div id="loans-counter" class="search-counter"></div>
+                    </div>
+                </div>
             </div>
             <div class="card-body">
                 <div id="loans-loading" class="loading">
@@ -740,7 +776,13 @@
         <!-- Investment Applications -->
         <div class="card">
             <div class="card-header">
-                <h3 class="mb-0"><i class="fas fa-chart-line me-2"></i>Investment Applications</h3>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0"><i class="fas fa-chart-line me-2"></i>Investment Applications</h3>
+                    <div class="admin-search">
+                        <input type="text" id="investments-search" class="form-control" placeholder="Search investments..." style="width: 250px;">
+                        <div id="investments-counter" class="search-counter"></div>
+                    </div>
+                </div>
             </div>
             <div class="card-body">
                 <div id="investments-loading" class="loading">
@@ -777,20 +819,116 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // Load data when page loads
-        // Search functionality
+        // Enhanced search functionality for all tables
         function setupSearch() {
-            const searchInput = document.getElementById('accounts-search');
-            if (searchInput) {
-                searchInput.addEventListener('input', function() {
-                    const searchTerm = this.value.toLowerCase();
-                    const rows = document.querySelectorAll('#accounts-table tbody tr');
-                    
-                    rows.forEach(row => {
-                        const text = row.textContent.toLowerCase();
-                        row.style.display = text.includes(searchTerm) ? '' : 'none';
-                    });
+            // Accounts search
+            const accountsSearchInput = document.getElementById('accounts-search');
+            if (accountsSearchInput) {
+                accountsSearchInput.addEventListener('input', function() {
+                    performSearch('#accounts-table', '#accounts-counter', this.value);
                 });
             }
+
+            // Contacts search
+            const contactsSearchInput = document.getElementById('contacts-search');
+            if (contactsSearchInput) {
+                contactsSearchInput.addEventListener('input', function() {
+                    performSearch('#contacts-table', '#contacts-counter', this.value);
+                });
+            }
+
+            // Loans search
+            const loansSearchInput = document.getElementById('loans-search');
+            if (loansSearchInput) {
+                loansSearchInput.addEventListener('input', function() {
+                    performSearch('#loans-table', '#loans-counter', this.value);
+                });
+            }
+
+            // Investments search
+            const investmentsSearchInput = document.getElementById('investments-search');
+            if (investmentsSearchInput) {
+                investmentsSearchInput.addEventListener('input', function() {
+                    performSearch('#investments-table', '#investments-counter', this.value);
+                });
+            }
+        }
+
+        // Enhanced search function with counters and highlighting
+        function performSearch(tableSelector, counterSelector, searchTerm) {
+            const searchLower = searchTerm.toLowerCase().trim();
+            const rows = document.querySelectorAll(`${tableSelector} tbody tr`);
+            const counter = document.querySelector(counterSelector);
+            
+            let visibleCount = 0;
+            let totalCount = rows.length;
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                const isVisible = searchLower === '' || text.includes(searchLower);
+                
+                row.style.display = isVisible ? '' : 'none';
+                if (isVisible) visibleCount++;
+                
+                // Add highlighting for search terms
+                if (searchLower && isVisible) {
+                    highlightSearchTerm(row, searchTerm);
+                } else {
+                    removeHighlighting(row);
+                }
+            });
+            
+            // Update counter
+            if (counter) {
+                if (searchLower === '') {
+                    counter.textContent = `${totalCount} total records`;
+                    counter.className = 'search-counter';
+                } else {
+                    counter.textContent = `${visibleCount} of ${totalCount} records match "${searchTerm}"`;
+                    counter.className = visibleCount > 0 ? 'search-counter highlight' : 'search-counter';
+                }
+            }
+        }
+
+        // Highlight search terms in table rows
+        function highlightSearchTerm(row, searchTerm) {
+            const cells = row.querySelectorAll('td');
+            cells.forEach(cell => {
+                const originalText = cell.textContent;
+                if (originalText.toLowerCase().includes(searchTerm.toLowerCase())) {
+                    const regex = new RegExp(`(${searchTerm})`, 'gi');
+                    const highlightedText = originalText.replace(regex, '<mark style="background-color: #fff3cd; padding: 2px 4px; border-radius: 3px;">$1</mark>');
+                    cell.innerHTML = highlightedText;
+                }
+            });
+        }
+
+        // Remove highlighting from table rows
+        function removeHighlighting(row) {
+            const cells = row.querySelectorAll('td');
+            cells.forEach(cell => {
+                if (cell.innerHTML !== cell.textContent) {
+                    cell.innerHTML = cell.textContent;
+                }
+            });
+        }
+
+        // Clear all search fields
+        function clearAllSearches() {
+            const searchInputs = [
+                'accounts-search',
+                'contacts-search', 
+                'loans-search',
+                'investments-search'
+            ];
+            
+            searchInputs.forEach(inputId => {
+                const input = document.getElementById(inputId);
+                if (input) {
+                    input.value = '';
+                    input.dispatchEvent(new Event('input'));
+                }
+            });
         }
         
         // Check authentication status
@@ -1071,6 +1209,12 @@
                     <td>${new Date(account.created_at).toLocaleDateString()}</td>
                 </tr>
             `).join('');
+            
+            // Initialize search counter
+            const counter = document.querySelector('#accounts-counter');
+            if (counter) {
+                counter.textContent = `${accounts.length} total records`;
+            }
         }
 
         function displayContacts(contacts) {
@@ -1097,6 +1241,12 @@
                     <td>${new Date(contact.created_at).toLocaleDateString()}</td>
                 </tr>
             `).join('');
+            
+            // Initialize search counter
+            const counter = document.querySelector('#contacts-counter');
+            if (counter) {
+                counter.textContent = `${contacts.length} total records`;
+            }
         }
 
         function displayLoans(loans) {
@@ -1123,6 +1273,12 @@
                     <td>${new Date(loan.created_at).toLocaleDateString()}</td>
                 </tr>
             `).join('');
+            
+            // Initialize search counter
+            const counter = document.querySelector('#loans-counter');
+            if (counter) {
+                counter.textContent = `${loans.length} total records`;
+            }
         }
 
         function displayInvestments(investments) {
@@ -1150,6 +1306,12 @@
                     <td>${new Date(investment.created_at).toLocaleDateString()}</td>
                 </tr>
             `).join('');
+            
+            // Initialize search counter
+            const counter = document.querySelector('#investments-counter');
+            if (counter) {
+                counter.textContent = `${investments.length} total records`;
+            }
         }
 
         function getStatusColor(status) {
