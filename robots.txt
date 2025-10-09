@@ -4,9 +4,14 @@ Allow: /
 # Sitemap
 Sitemap: https://platinum-mfb.netlify.app/sitemap.xml
 
-# Disallow admin pages
+# Disallow admin pages and sensitive areas
 Disallow: /admin.html
 Disallow: /admin/
+Disallow: /login.html
+Disallow: /forgot-password.html
+Disallow: /reset-password.html
+Disallow: /security-policy.html
+Disallow: /.well-known/
 
 # Allow all other pages
 Allow: /index.html
