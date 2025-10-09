@@ -53,6 +53,13 @@ const adminSchema = new mongoose.Schema({
   updatedAt: {
     type: Date,
     default: Date.now
+  },
+  // Password reset fields
+  resetPasswordToken: {
+    type: String
+  },
+  resetPasswordExpires: {
+    type: Date
   }
 });
 
@@ -111,6 +118,20 @@ adminSchema.methods.updateLastLogin = function() {
   return this.updateOne({
     $set: { lastLogin: Date.now() }
   });
+};
+
+// Generate password reset token
+adminSchema.methods.generatePasswordResetToken = function() {
+  const resetToken = uuidv4();
+  this.resetPasswordToken = resetToken;
+  this.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+  return resetToken;
+};
+
+// Clear password reset token
+adminSchema.methods.clearPasswordResetToken = function() {
+  this.resetPasswordToken = undefined;
+  this.resetPasswordExpires = undefined;
 };
 
 module.exports = mongoose.model('Admin', adminSchema);

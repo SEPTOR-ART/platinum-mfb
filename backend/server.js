@@ -8,6 +8,8 @@ const rateLimit = require('express-rate-limit');
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const nodemailer = require('nodemailer');
+const { v4: uuidv4 } = require('uuid');
 
 // Load environment variables
 dotenv.config();
@@ -27,6 +29,123 @@ if (!process.env.PORT) {
 
 if (!process.env.JWT_SECRET) {
   process.env.JWT_SECRET = 'platinum-mfb-admin-secret-key-2024';
+}
+
+if (!process.env.EMAIL_HOST) {
+  process.env.EMAIL_HOST = 'smtp.gmail.com';
+}
+
+if (!process.env.EMAIL_PORT) {
+  process.env.EMAIL_PORT = 587;
+}
+
+if (!process.env.EMAIL_USER) {
+  process.env.EMAIL_USER = 'noreply@platinummfb.com';
+}
+
+if (!process.env.EMAIL_PASS) {
+  process.env.EMAIL_PASS = 'your-email-password-here';
+}
+
+if (!process.env.BASE_URL) {
+  process.env.BASE_URL = 'https://platinum-mfb.netlify.app';
+}
+
+// Email service configuration
+const transporter = nodemailer.createTransporter({
+  host: process.env.EMAIL_HOST,
+  port: process.env.EMAIL_PORT,
+  secure: false, // true for 465, false for other ports
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  }
+});
+
+// Verify email configuration
+transporter.verify((error, success) => {
+  if (error) {
+    console.log('❌ Email service configuration error:', error.message);
+  } else {
+    console.log('✅ Email service ready to send messages');
+  }
+});
+
+// Email sending function
+async function sendPasswordResetEmail(email, resetToken, adminName) {
+  const resetUrl = `${process.env.BASE_URL}/reset-password.html?token=${resetToken}`;
+  
+  const mailOptions = {
+    from: `"Platinum MFB Admin" <${process.env.EMAIL_USER}>`,
+    to: email,
+    subject: 'Password Reset Request - Platinum Microfinance Bank',
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="background: linear-gradient(135deg, #28a745, #20c997); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+          <h1 style="margin: 0; font-size: 24px;">🔐 Password Reset</h1>
+          <p style="margin: 10px 0 0 0; opacity: 0.9;">Platinum Microfinance Bank Admin Portal</p>
+        </div>
+        
+        <div style="background: white; padding: 30px; border: 1px solid #e9ecef; border-top: none; border-radius: 0 0 10px 10px;">
+          <h2 style="color: #333; margin-top: 0;">Hello ${adminName},</h2>
+          
+          <p style="color: #666; line-height: 1.6;">
+            We received a request to reset your password for the Platinum MFB Admin Portal. 
+            If you made this request, click the button below to reset your password:
+          </p>
+          
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${resetUrl}" 
+               style="background: linear-gradient(135deg, #28a745, #20c997); 
+                      color: white; 
+                      padding: 15px 30px; 
+                      text-decoration: none; 
+                      border-radius: 25px; 
+                      font-weight: bold;
+                      display: inline-block;
+                      box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);">
+              🔑 Reset My Password
+            </a>
+          </div>
+          
+          <p style="color: #666; line-height: 1.6;">
+            Or copy and paste this link into your browser:
+          </p>
+          <p style="background: #f8f9fa; padding: 15px; border-radius: 5px; word-break: break-all; color: #495057;">
+            ${resetUrl}
+          </p>
+          
+          <div style="background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 5px; margin: 20px 0;">
+            <p style="margin: 0; color: #856404;">
+              <strong>⚠️ Important:</strong> This link will expire in 1 hour for security reasons. 
+              If you didn't request this password reset, please ignore this email.
+            </p>
+          </div>
+          
+          <p style="color: #666; line-height: 1.6;">
+            If you have any questions or need assistance, please contact our technical support team.
+          </p>
+          
+          <hr style="border: none; border-top: 1px solid #e9ecef; margin: 30px 0;">
+          
+          <p style="color: #999; font-size: 12px; text-align: center; margin: 0;">
+            © ${new Date().getFullYear()} Platinum Microfinance Bank Limited<br>
+            160 Ziks Avenue, Awka, Anambra State, Nigeria<br>
+            Licensed by the Central Bank of Nigeria (CBN)
+          </p>
+        </div>
+      </div>
+    `
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log('✅ Password reset email sent to:', email);
+    return true;
+  } catch (error) {
+    console.error('❌ Error sending password reset email:', error);
+    return false;
+  }
 }
 
 // Fallback file storage for when database is not available
@@ -373,6 +492,150 @@ app.get('/api/admin/check', async (req, res) => {
     res.status(500).json({ 
       adminExists: false,
       message: 'Error checking admin status: ' + error.message 
+    });
+  }
+});
+
+// Request password reset
+app.post('/api/admin/request-password-reset', async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Email address is required' 
+      });
+    }
+
+    // Check if email ends with @platinummfb.com
+    if (!email.endsWith('@platinummfb.com')) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Password reset is only available for @platinummfb.com email addresses' 
+      });
+    }
+
+    // Find admin by email
+    const admin = await Admin.findOne({ email, isActive: true });
+
+    if (!admin) {
+      return res.status(404).json({ 
+        success: false, 
+        message: 'No admin account found with this email address' 
+      });
+    }
+
+    // Generate reset token
+    const resetToken = admin.generatePasswordResetToken();
+    await admin.save();
+
+    // Send password reset email
+    const emailSent = await sendPasswordResetEmail(email, resetToken, admin.fullName);
+
+    if (emailSent) {
+      res.json({
+        success: true,
+        message: 'Password reset instructions have been sent to your email address'
+      });
+    } else {
+      // Clear the token if email failed
+      admin.clearPasswordResetToken();
+      await admin.save();
+      
+      res.status(500).json({ 
+        success: false, 
+        message: 'Failed to send password reset email. Please try again later.' 
+      });
+    }
+
+  } catch (error) {
+    console.error('Password reset request error:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Internal server error' 
+    });
+  }
+});
+
+// Verify password reset token
+app.get('/api/admin/verify-reset-token/:token', async (req, res) => {
+  try {
+    const { token } = req.params;
+
+    const admin = await Admin.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: Date.now() }
+    });
+
+    if (!admin) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Invalid or expired reset token' 
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Reset token is valid',
+      email: admin.email
+    });
+
+  } catch (error) {
+    console.error('Token verification error:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Internal server error' 
+    });
+  }
+});
+
+// Reset password
+app.post('/api/admin/reset-password', async (req, res) => {
+  try {
+    const { token, newPassword } = req.body;
+
+    if (!token || !newPassword) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Token and new password are required' 
+      });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Password must be at least 6 characters long' 
+      });
+    }
+
+    const admin = await Admin.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: Date.now() }
+    });
+
+    if (!admin) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Invalid or expired reset token' 
+      });
+    }
+
+    // Update password
+    admin.password = newPassword;
+    admin.clearPasswordResetToken();
+    await admin.save();
+
+    res.json({
+      success: true,
+      message: 'Password has been reset successfully. You can now login with your new password.'
+    });
+
+  } catch (error) {
+    console.error('Password reset error:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Internal server error' 
     });
   }
 });
