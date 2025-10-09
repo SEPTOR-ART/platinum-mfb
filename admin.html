@@ -231,6 +231,7 @@
             border-radius: 10px;
             overflow: hidden;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 0;
         }
         
         .table thead th {
@@ -239,6 +240,9 @@
             font-weight: 600;
             color: #495057;
             padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
         
         .table tbody tr {
@@ -253,6 +257,73 @@
         .table tbody td {
             padding: 1rem;
             border-color: rgba(0,0,0,0.05);
+        }
+        
+        /* Scrollable Table Container */
+        .table-container {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+        }
+        
+        .table-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .table-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        .table-container::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            border-radius: 10px;
+        }
+        
+        .table-container::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #1e7e34, #17a2b8);
+        }
+        
+        /* Custom scrollbar for activity list */
+        .activity-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .activity-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        .activity-list::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            border-radius: 10px;
+        }
+        
+        .activity-list::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #1e7e34, #17a2b8);
+        }
+        
+        /* Smooth scrolling behavior */
+        .table-container, .activity-list {
+            scroll-behavior: smooth;
+        }
+        
+        /* Add subtle shadow to indicate scrollable content */
+        .table-container {
+            position: relative;
+        }
+        
+        .table-container::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 20px;
+            background: linear-gradient(transparent, rgba(248,249,250,0.8));
+            pointer-events: none;
+            border-radius: 0 0 10px 10px;
         }
         
         /* Enhanced Badge Styles */
@@ -511,7 +582,7 @@
                 <div class="row mt-4">
                     <div class="col-md-6">
                         <h5><i class="fas fa-calendar-week me-2"></i>Recent Activity (Last 7 Days)</h5>
-                        <div id="recent-activity" class="activity-list">
+                        <div id="recent-activity" class="activity-list" style="max-height: 200px; overflow-y: auto;">
                             <div class="activity-item">
                                 <i class="fas fa-circle text-success"></i>
                                 <span>Loading recent activity...</span>
@@ -566,8 +637,8 @@
                     <i class="fas fa-spinner fa-spin me-2"></i>Loading account applications...
                 </div>
                 <div id="accounts-content" style="display: none;">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
+                    <div class="table-responsive table-container">
+                        <table class="table table-hover" id="accounts-table">
                             <thead>
                                 <tr>
                                     <th>Name</th>
@@ -603,8 +674,8 @@
                     <i class="fas fa-spinner fa-spin me-2"></i>Loading contact messages...
                 </div>
                 <div id="contacts-content" style="display: none;">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
+                    <div class="table-responsive table-container">
+                        <table class="table table-hover" id="contacts-table">
                             <thead>
                                 <tr>
                                     <th>Name</th>
@@ -638,8 +709,8 @@
                     <i class="fas fa-spinner fa-spin me-2"></i>Loading loan applications...
                 </div>
                 <div id="loans-content" style="display: none;">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
+                    <div class="table-responsive table-container">
+                        <table class="table table-hover" id="loans-table">
                             <thead>
                                 <tr>
                                     <th>Name</th>
@@ -673,8 +744,8 @@
                     <i class="fas fa-spinner fa-spin me-2"></i>Loading investment applications...
                 </div>
                 <div id="investments-content" style="display: none;">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
+                    <div class="table-responsive table-container">
+                        <table class="table table-hover" id="investments-table">
                             <thead>
                                 <tr>
                                     <th>Name</th>
