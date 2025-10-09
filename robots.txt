@@ -1,0 +1,26 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://platinum-mfb.netlify.app/sitemap.xml
+
+# Disallow admin pages
+Disallow: /admin.html
+Disallow: /admin/
+
+# Allow all other pages
+Allow: /index.html
+Allow: /about.html
+Allow: /services.html
+Allow: /contact.html
+Allow: /open_account.html
+Allow: /loan.html
+Allow: /savings.html
+Allow: /investments.html
+Allow: /career.html
+Allow: /faqs.html
+Allow: /mobile-banking.html
+Allow: /personal-accounts.html
+Allow: /business-accounts.html
+Allow: /terms.html
+Allow: /privacy.html

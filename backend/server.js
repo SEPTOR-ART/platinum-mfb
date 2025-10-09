@@ -59,6 +59,32 @@ function saveToFile(filename, data) {
 
 const app = express();
 
+// Security Headers Middleware
+app.use((req, res, next) => {
+  // Security headers to prevent browser warnings
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
+  
+  // Content Security Policy
+  res.setHeader('Content-Security-Policy', 
+    "default-src 'self'; " +
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; " +
+    "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; " +
+    "img-src 'self' data: https:; " +
+    "font-src 'self' https://cdnjs.cloudflare.com; " +
+    "connect-src 'self' https://platinum-mfb.onrender.com; " +
+    "frame-ancestors 'none'"
+  );
+  
+  // Strict Transport Security (HSTS)
+  res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+  
+  next();
+});
+
 // Middleware
 const corsEnv = process.env.CORS_ORIGIN || '*';
 const allowedOrigins = corsEnv.split(',').map(o => o.trim());
@@ -129,8 +155,8 @@ app.get('/api/health', (req, res) => {
 app.get('/', (req, res) => {
   res.json({ 
     message: 'Platinum MFB Backend is running', 
-    version: '2.4.0',
-    status: 'Website analytics and performance tracking added',
+    version: '2.5.0',
+    status: 'Security headers and trust signals added to prevent browser warnings',
     endpoints: [
       '/api/open-account',
       '/api/contact', 
