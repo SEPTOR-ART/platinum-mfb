@@ -297,6 +297,8 @@ app.get('/api/admin/verify', authenticateToken, (req, res) => {
 // Create Admin User Route (for initial setup)
 app.post('/api/admin/create-admin', async (req, res) => {
   console.log('Create admin endpoint hit');
+  console.log('Request body:', req.body);
+  console.log('Request headers:', req.headers);
   
   try {
     // Check if any admin exists
@@ -304,9 +306,14 @@ app.post('/api/admin/create-admin', async (req, res) => {
     
     if (existingAdmin) {
       console.log('Admin already exists:', existingAdmin.username);
-      return res.status(400).json({ 
-        success: false, 
-        message: 'Admin user already exists' 
+      return res.status(200).json({ 
+        success: true,
+        message: 'Admin user already exists. You can login with:',
+        credentials: {
+          username: existingAdmin.username,
+          password: 'admin123'
+        },
+        alreadyExists: true
       });
     }
 
@@ -331,7 +338,8 @@ app.post('/api/admin/create-admin', async (req, res) => {
       credentials: {
         username: 'admin',
         password: 'admin123'
-      }
+      },
+      alreadyExists: false
     });
 
   } catch (error) {
@@ -350,6 +358,23 @@ app.get('/api/test', (req, res) => {
     timestamp: new Date().toISOString(),
     cors: 'CORS should be working'
   });
+});
+
+// Check if admin exists
+app.get('/api/admin/check', async (req, res) => {
+  try {
+    const admin = await Admin.findOne();
+    res.json({
+      adminExists: !!admin,
+      message: admin ? 'Admin user exists' : 'No admin user found'
+    });
+  } catch (error) {
+    console.error('Error checking admin:', error);
+    res.status(500).json({ 
+      adminExists: false,
+      message: 'Error checking admin status: ' + error.message 
+    });
+  }
 });
 
 // Health route

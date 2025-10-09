@@ -451,7 +451,11 @@
                 const data = await response.json();
                 
                 if (response.ok && data.success) {
-                    showAlert('Admin user created successfully! You can now login with:<br><strong>Username:</strong> admin<br><strong>Password:</strong> admin123', 'success');
+                    if (data.alreadyExists) {
+                        showAlert('Admin user already exists! You can login with:<br><strong>Username:</strong> admin<br><strong>Password:</strong> admin123', 'info');
+                    } else {
+                        showAlert('Admin user created successfully! You can now login with:<br><strong>Username:</strong> admin<br><strong>Password:</strong> admin123', 'success');
+                    }
                     
                     // Auto-fill the form
                     document.getElementById('username').value = 'admin';
