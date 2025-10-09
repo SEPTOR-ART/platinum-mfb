@@ -129,8 +129,8 @@ app.get('/api/health', (req, res) => {
 app.get('/', (req, res) => {
   res.json({ 
     message: 'Platinum MFB Backend is running', 
-    version: '2.2.0',
-    status: 'Admin endpoints with file fallback deployed',
+    version: '2.3.0',
+    status: 'Admin endpoints fixed - moved before 404 handler',
     endpoints: [
       '/api/open-account',
       '/api/contact', 
@@ -348,11 +348,6 @@ app.post('/api/investment-application', async (req, res) => {
 const publicDir = path.join(__dirname, '..');
 app.use(express.static(publicDir));
 
-// Error handling for uncaught routes
-app.use((req, res) => {
-  res.status(404).json({ error: 'Route not found' });
-});
-
 // Admin endpoints to view submitted forms
 app.get('/api/admin/accounts', async (req, res) => {
   try {
@@ -505,6 +500,11 @@ app.get('/api/admin/file-data', (req, res) => {
     console.error('Error reading file data:', error);
     res.status(500).json({ error: 'Error reading file data' });
   }
+});
+
+// Error handling for uncaught routes
+app.use((req, res) => {
+  res.status(404).json({ error: 'Route not found' });
 });
 
 // Start server

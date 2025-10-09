@@ -277,8 +277,11 @@
         async function loadAccounts() {
             try {
                 const response = await fetch('https://platinum-mfb.onrender.com/api/admin/accounts');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
                 const accounts = await response.json();
-                displayAccounts(accounts);
+                displayAccounts(Array.isArray(accounts) ? accounts : []);
             } catch (error) {
                 console.error('Error loading accounts:', error);
                 document.getElementById('accounts-loading').style.display = 'none';
@@ -289,8 +292,11 @@
         async function loadContacts() {
             try {
                 const response = await fetch('https://platinum-mfb.onrender.com/api/admin/contacts');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
                 const contacts = await response.json();
-                displayContacts(contacts);
+                displayContacts(Array.isArray(contacts) ? contacts : []);
             } catch (error) {
                 console.error('Error loading contacts:', error);
                 document.getElementById('contacts-loading').style.display = 'none';
@@ -301,8 +307,11 @@
         async function loadLoans() {
             try {
                 const response = await fetch('https://platinum-mfb.onrender.com/api/admin/loans');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
                 const loans = await response.json();
-                displayLoans(loans);
+                displayLoans(Array.isArray(loans) ? loans : []);
             } catch (error) {
                 console.error('Error loading loans:', error);
                 document.getElementById('loans-loading').style.display = 'none';
@@ -313,8 +322,11 @@
         async function loadInvestments() {
             try {
                 const response = await fetch('https://platinum-mfb.onrender.com/api/admin/investment-applications');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
                 const investments = await response.json();
-                displayInvestments(investments);
+                displayInvestments(Array.isArray(investments) ? investments : []);
             } catch (error) {
                 console.error('Error loading investments:', error);
                 document.getElementById('investments-loading').style.display = 'none';
