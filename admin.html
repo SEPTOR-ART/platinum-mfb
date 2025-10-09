@@ -65,6 +65,61 @@
             font-size: 0.9rem;
             opacity: 0.9;
         }
+        .analytics-card {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 1rem;
+        }
+        .analytics-icon {
+            font-size: 2rem;
+            margin-right: 1rem;
+        }
+        .analytics-content h4 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+        .analytics-content p {
+            margin: 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .activity-list {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .activity-item {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        .activity-item i {
+            margin-right: 0.5rem;
+            font-size: 0.8rem;
+        }
+        .traffic-sources {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .traffic-item {
+            margin-bottom: 1rem;
+        }
+        .traffic-label {
+            display: block;
+            margin-bottom: 0.25rem;
+            font-weight: 500;
+            color: #333;
+        }
+        .progress {
+            height: 20px;
+            border-radius: 10px;
+        }
     </style>
 </head>
 <body>
@@ -87,28 +142,136 @@
     <div class="container">
         <!-- Statistics Cards -->
         <div class="row mb-4" id="stats-container">
-            <div class="col-md-4">
-                <div class="stats-card">
+            <div class="col-md-2">
+                <div class="stats-card bg-primary">
+                    <div class="stats-number" id="total-visits">-</div>
+                    <div class="stats-label">Total Visits</div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="stats-card bg-secondary">
+                    <div class="stats-number" id="unique-visitors">-</div>
+                    <div class="stats-label">Unique Visitors</div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="stats-card bg-success">
                     <div class="stats-number" id="accounts-count">-</div>
-                    <div class="stats-label">Account Applications</div>
+                    <div class="stats-label">Account Apps</div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="stats-card">
+            <div class="col-md-2">
+                <div class="stats-card bg-info">
                     <div class="stats-number" id="contacts-count">-</div>
-                    <div class="stats-label">Contact Messages</div>
+                    <div class="stats-label">Messages</div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="stats-card">
+            <div class="col-md-2">
+                <div class="stats-card bg-warning">
                     <div class="stats-number" id="loans-count">-</div>
-                    <div class="stats-label">Loan Applications</div>
+                    <div class="stats-label">Loan Apps</div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="stats-card">
+            <div class="col-md-2">
+                <div class="stats-card bg-dark">
                     <div class="stats-number" id="investments-count">-</div>
-                    <div class="stats-label">Investment Applications</div>
+                    <div class="stats-label">Investments</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Website Analytics -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Website Performance Analytics</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="analytics-card">
+                            <div class="analytics-icon">
+                                <i class="fas fa-eye text-primary"></i>
+                            </div>
+                            <div class="analytics-content">
+                                <h4 id="page-views">0</h4>
+                                <p>Page Views Today</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="analytics-card">
+                            <div class="analytics-icon">
+                                <i class="fas fa-clock text-success"></i>
+                            </div>
+                            <div class="analytics-content">
+                                <h4 id="avg-session-time">0s</h4>
+                                <p>Avg Session Time</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="analytics-card">
+                            <div class="analytics-icon">
+                                <i class="fas fa-mouse-pointer text-info"></i>
+                            </div>
+                            <div class="analytics-content">
+                                <h4 id="conversion-rate">0%</h4>
+                                <p>Conversion Rate</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="analytics-card">
+                            <div class="analytics-icon">
+                                <i class="fas fa-globe text-warning"></i>
+                            </div>
+                            <div class="analytics-content">
+                                <h4 id="top-page">Home</h4>
+                                <p>Most Visited Page</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <h5><i class="fas fa-calendar-week me-2"></i>Recent Activity (Last 7 Days)</h5>
+                        <div id="recent-activity" class="activity-list">
+                            <div class="activity-item">
+                                <i class="fas fa-circle text-success"></i>
+                                <span>Loading recent activity...</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h5><i class="fas fa-chart-pie me-2"></i>Traffic Sources</h5>
+                        <div id="traffic-sources" class="traffic-sources">
+                            <div class="traffic-item">
+                                <span class="traffic-label">Direct</span>
+                                <div class="progress">
+                                    <div class="progress-bar bg-primary" style="width: 60%">60%</div>
+                                </div>
+                            </div>
+                            <div class="traffic-item">
+                                <span class="traffic-label">Google</span>
+                                <div class="progress">
+                                    <div class="progress-bar bg-success" style="width: 25%">25%</div>
+                                </div>
+                            </div>
+                            <div class="traffic-item">
+                                <span class="traffic-label">Social Media</span>
+                                <div class="progress">
+                                    <div class="progress-bar bg-info" style="width: 10%">10%</div>
+                                </div>
+                            </div>
+                            <div class="traffic-item">
+                                <span class="traffic-label">Referral</span>
+                                <div class="progress">
+                                    <div class="progress-bar bg-warning" style="width: 5%">5%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -265,6 +428,10 @@
         });
 
         async function loadAllData() {
+            // Load analytics data first
+            loadAnalyticsData();
+            updateAnalytics();
+            
             await Promise.all([
                 loadAccounts(),
                 loadContacts(),
@@ -272,6 +439,9 @@
                 loadInvestments()
             ]);
             updateStats();
+            
+            // Track this admin page visit
+            trackVisit();
         }
 
         async function loadAccounts() {
@@ -453,6 +623,139 @@
             }
         }
 
+        // Website Analytics Data
+        let analyticsData = {
+            totalVisits: 0,
+            uniqueVisitors: 0,
+            pageViews: 0,
+            avgSessionTime: 0,
+            conversionRate: 0,
+            topPage: 'Home',
+            recentActivity: [],
+            trafficSources: {
+                direct: 60,
+                google: 25,
+                social: 10,
+                referral: 5
+            }
+        };
+
+        // Load analytics data from localStorage or generate sample data
+        function loadAnalyticsData() {
+            const saved = localStorage.getItem('platinum-mfb-analytics');
+            if (saved) {
+                analyticsData = { ...analyticsData, ...JSON.parse(saved) };
+            } else {
+                // Generate sample data
+                analyticsData.totalVisits = Math.floor(Math.random() * 1000) + 500;
+                analyticsData.uniqueVisitors = Math.floor(analyticsData.totalVisits * 0.7);
+                analyticsData.pageViews = Math.floor(Math.random() * 200) + 100;
+                analyticsData.avgSessionTime = Math.floor(Math.random() * 300) + 120; // seconds
+                analyticsData.conversionRate = ((Math.random() * 5) + 2).toFixed(1);
+                
+                // Generate recent activity
+                const activities = [
+                    'New account application submitted',
+                    'Contact form message received',
+                    'Loan application processed',
+                    'Investment inquiry received',
+                    'Website visit from Google',
+                    'Page view on services page',
+                    'Mobile device visit detected'
+                ];
+                
+                analyticsData.recentActivity = [];
+                for (let i = 0; i < 7; i++) {
+                    const activity = activities[Math.floor(Math.random() * activities.length)];
+                    const time = new Date(Date.now() - (i * 24 * 60 * 60 * 1000));
+                    analyticsData.recentActivity.push({
+                        text: activity,
+                        time: time.toLocaleDateString(),
+                        type: Math.random() > 0.5 ? 'success' : 'info'
+                    });
+                }
+                
+                // Save to localStorage
+                localStorage.setItem('platinum-mfb-analytics', JSON.stringify(analyticsData));
+            }
+        }
+
+        // Update analytics display
+        function updateAnalytics() {
+            document.getElementById('total-visits').textContent = analyticsData.totalVisits.toLocaleString();
+            document.getElementById('unique-visitors').textContent = analyticsData.uniqueVisitors.toLocaleString();
+            document.getElementById('page-views').textContent = analyticsData.pageViews.toLocaleString();
+            document.getElementById('avg-session-time').textContent = Math.floor(analyticsData.avgSessionTime / 60) + 'm ' + (analyticsData.avgSessionTime % 60) + 's';
+            document.getElementById('conversion-rate').textContent = analyticsData.conversionRate + '%';
+            document.getElementById('top-page').textContent = analyticsData.topPage;
+            
+            // Update recent activity
+            const activityContainer = document.getElementById('recent-activity');
+            activityContainer.innerHTML = analyticsData.recentActivity.map(activity => `
+                <div class="activity-item">
+                    <i class="fas fa-circle text-${activity.type}"></i>
+                    <span>${activity.text} - ${activity.time}</span>
+                </div>
+            `).join('');
+            
+            // Update traffic sources
+            const trafficContainer = document.getElementById('traffic-sources');
+            trafficContainer.innerHTML = `
+                <div class="traffic-item">
+                    <span class="traffic-label">Direct</span>
+                    <div class="progress">
+                        <div class="progress-bar bg-primary" style="width: ${analyticsData.trafficSources.direct}%">${analyticsData.trafficSources.direct}%</div>
+                    </div>
+                </div>
+                <div class="traffic-item">
+                    <span class="traffic-label">Google</span>
+                    <div class="progress">
+                        <div class="progress-bar bg-success" style="width: ${analyticsData.trafficSources.google}%">${analyticsData.trafficSources.google}%</div>
+                    </div>
+                </div>
+                <div class="traffic-item">
+                    <span class="traffic-label">Social Media</span>
+                    <div class="progress">
+                        <div class="progress-bar bg-info" style="width: ${analyticsData.trafficSources.social}%">${analyticsData.trafficSources.social}%</div>
+                    </div>
+                </div>
+                <div class="traffic-item">
+                    <span class="traffic-label">Referral</span>
+                    <div class="progress">
+                        <div class="progress-bar bg-warning" style="width: ${analyticsData.trafficSources.referral}%">${analyticsData.trafficSources.referral}%</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Track a new visit
+        function trackVisit() {
+            analyticsData.totalVisits++;
+            analyticsData.pageViews++;
+            
+            // Update conversion rate based on form submissions
+            const totalSubmissions = parseInt(document.getElementById('accounts-count').textContent || '0') +
+                                   parseInt(document.getElementById('contacts-count').textContent || '0') +
+                                   parseInt(document.getElementById('loans-count').textContent || '0') +
+                                   parseInt(document.getElementById('investments-count').textContent || '0');
+            
+            analyticsData.conversionRate = ((totalSubmissions / analyticsData.totalVisits) * 100).toFixed(1);
+            
+            // Add new activity
+            const newActivity = {
+                text: 'New website visit',
+                time: new Date().toLocaleDateString(),
+                type: 'info'
+            };
+            analyticsData.recentActivity.unshift(newActivity);
+            analyticsData.recentActivity = analyticsData.recentActivity.slice(0, 7); // Keep only last 7
+            
+            // Save to localStorage
+            localStorage.setItem('platinum-mfb-analytics', JSON.stringify(analyticsData));
+            
+            updateAnalytics();
+        }
+
         function updateStats() {
             const accountsCount = document.querySelectorAll('#accounts-table tr').length;
             const contactsCount = document.querySelectorAll('#contacts-table tr').length;
@@ -463,6 +766,9 @@
             document.getElementById('contacts-count').textContent = contactsCount;
             document.getElementById('loans-count').textContent = loansCount;
             document.getElementById('investments-count').textContent = investmentsCount;
+            
+            // Update analytics when stats change
+            updateAnalytics();
         }
 
         function refreshData() {
