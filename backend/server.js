@@ -484,9 +484,18 @@ app.post('/api/admin/create-admin', async (req, res) => {
 // Test endpoint to verify server is working
 app.get('/api/test', (req, res) => {
   res.json({ 
-    message: 'Server is working!', 
+    message: 'Platinum MFB API is working!', 
     timestamp: new Date().toISOString(),
-    cors: 'CORS should be working'
+    version: '2.2.0',
+    cors: 'CORS should be working',
+    endpoints: {
+      career: '/api/career-application',
+      faq: '/api/faq-submission',
+      admin: {
+        faqs: '/api/admin/faqs',
+        careers: '/api/admin/careers'
+      }
+    }
   });
 });
 
@@ -1328,7 +1337,9 @@ app.use((req, res) => {
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`🚀 Platinum MFB Server v2.2.0 running on port ${PORT}`);
+  console.log('✅ Career Application API: /api/career-application');
+  console.log('✅ FAQ Submission API: /api/faq-submission');
 });
 
 // Handle process termination
