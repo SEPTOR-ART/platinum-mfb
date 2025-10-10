@@ -658,6 +658,49 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Additional Statistics Row -->
+        <div class="row mb-4">
+            <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                <div class="stats-card bg-danger">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <div class="stats-number" id="faqs-count">-</div>
+                            <div class="stats-label">FAQ Submissions</div>
+                        </div>
+                        <div class="stats-icon">
+                            <i class="fas fa-question-circle"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                <div class="stats-card bg-purple" style="background: linear-gradient(135deg, #6f42c1, #e83e8c) !important;">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <div class="stats-number" id="careers-count">-</div>
+                            <div class="stats-label">Career Apps</div>
+                        </div>
+                        <div class="stats-icon">
+                            <i class="fas fa-briefcase"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8 col-md-4 col-sm-6 mb-3">
+                <div class="stats-card" style="background: linear-gradient(135deg, #17a2b8, #20c997) !important; color: white;">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <div class="stats-number" id="total-submissions">-</div>
+                            <div class="stats-label">Total Submissions</div>
+                        </div>
+                        <div class="stats-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Website Analytics -->
         <div class="card mb-4">
@@ -876,6 +919,7 @@
                                     <th>Occupation</th>
                                     <th>Status</th>
                                     <th>Date</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="accounts-table">
@@ -917,6 +961,7 @@
                                     <th>Message</th>
                                     <th>Status</th>
                                     <th>Date</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="contacts-table">
@@ -958,6 +1003,7 @@
                                     <th>Purpose</th>
                                     <th>Status</th>
                                     <th>Date</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="loans-table">
@@ -1000,6 +1046,7 @@
                                     <th>Duration</th>
                                     <th>Status</th>
                                     <th>Date</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="investments-table">
@@ -1011,6 +1058,90 @@
                     <i class="fas fa-inbox fa-3x mb-3"></i>
                     <h4>No Investment Applications Yet</h4>
                     <p>Investment applications will appear here once customers submit them.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ Submissions -->
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0"><i class="fas fa-question-circle me-2"></i>FAQ Submissions</h3>
+                    <div class="admin-search">
+                        <input type="text" id="faqs-search" class="form-control" placeholder="Search FAQs..." style="width: 250px;">
+                        <div id="faqs-counter" class="search-counter"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div id="faqs-loading" class="loading">
+                    <i class="fas fa-spinner fa-spin me-2"></i>Loading FAQ submissions...
+                </div>
+                <div id="faqs-content" style="display: none;">
+                    <div class="table-responsive table-container">
+                        <table class="table table-hover" id="faqs-table">
+                            <thead>
+                                <tr>
+                                    <th>Question</th>
+                                    <th>Email</th>
+                                    <th>Details</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="faqs-table">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div id="faqs-empty" class="no-data" style="display: none;">
+                    <i class="fas fa-question-circle fa-3x mb-3"></i>
+                    <h4>No FAQ Submissions Yet</h4>
+                    <p>FAQ submissions will appear here once customers submit them.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Career Applications -->
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0"><i class="fas fa-briefcase me-2"></i>Career Applications</h3>
+                    <div class="admin-search">
+                        <input type="text" id="careers-search" class="form-control" placeholder="Search career applications..." style="width: 250px;">
+                        <div id="careers-counter" class="search-counter"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div id="careers-loading" class="loading">
+                    <i class="fas fa-spinner fa-spin me-2"></i>Loading career applications...
+                </div>
+                <div id="careers-content" style="display: none;">
+                    <div class="table-responsive table-container">
+                        <table class="table table-hover" id="careers-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Position</th>
+                                    <th>Experience</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="careers-table">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div id="careers-empty" class="no-data" style="display: none;">
+                    <i class="fas fa-briefcase fa-3x mb-3"></i>
+                    <h4>No Career Applications Yet</h4>
+                    <p>Career applications will appear here once candidates submit them.</p>
                 </div>
             </div>
         </div>
@@ -1051,6 +1182,22 @@
             if (investmentsSearchInput) {
                 investmentsSearchInput.addEventListener('input', function() {
                     performSearch('#investments-table', '#investments-counter', this.value);
+                });
+            }
+
+            // FAQs search
+            const faqsSearchInput = document.getElementById('faqs-search');
+            if (faqsSearchInput) {
+                faqsSearchInput.addEventListener('input', function() {
+                    performSearch('#faqs-table', '#faqs-counter', this.value);
+                });
+            }
+
+            // Careers search
+            const careersSearchInput = document.getElementById('careers-search');
+            if (careersSearchInput) {
+                careersSearchInput.addEventListener('input', function() {
+                    performSearch('#careers-table', '#careers-counter', this.value);
                 });
             }
         }
@@ -1120,7 +1267,9 @@
                 'accounts-search',
                 'contacts-search', 
                 'loans-search',
-                'investments-search'
+                'investments-search',
+                'faqs-search',
+                'careers-search'
             ];
             
             searchInputs.forEach(inputId => {
@@ -1225,6 +1374,12 @@
                 await new Promise(resolve => setTimeout(resolve, 500));
                 
                 await loadInvestments();
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                await loadFAQs();
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                await loadCareers();
                 
                 updateStats();
                 
@@ -1384,6 +1539,80 @@
             }
         }
 
+        async function loadFAQs() {
+            try {
+                // Add retry logic for failed requests
+                let response;
+                let retries = 3;
+                
+                while (retries > 0) {
+                    try {
+                        const token = localStorage.getItem('admin_token');
+                        response = await fetch('https://platinum-mfb.onrender.com/api/admin/faqs', {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            mode: 'cors'
+                        });
+                        break;
+                    } catch (fetchError) {
+                        retries--;
+                        if (retries === 0) throw fetchError;
+                        await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second before retry
+                    }
+                }
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const faqs = await response.json();
+                displayFAQs(Array.isArray(faqs) ? faqs : []);
+            } catch (error) {
+                console.error('Error loading FAQs:', error);
+                document.getElementById('faqs-loading').style.display = 'none';
+                document.getElementById('faqs-empty').style.display = 'block';
+            }
+        }
+
+        async function loadCareers() {
+            try {
+                // Add retry logic for failed requests
+                let response;
+                let retries = 3;
+                
+                while (retries > 0) {
+                    try {
+                        const token = localStorage.getItem('admin_token');
+                        response = await fetch('https://platinum-mfb.onrender.com/api/admin/careers', {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            mode: 'cors'
+                        });
+                        break;
+                    } catch (fetchError) {
+                        retries--;
+                        if (retries === 0) throw fetchError;
+                        await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second before retry
+                    }
+                }
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const careers = await response.json();
+                displayCareers(Array.isArray(careers) ? careers : []);
+            } catch (error) {
+                console.error('Error loading careers:', error);
+                document.getElementById('careers-loading').style.display = 'none';
+                document.getElementById('careers-empty').style.display = 'block';
+            }
+        }
+
         function displayAccounts(accounts) {
             const container = document.getElementById('accounts-table');
             const loading = document.getElementById('accounts-loading');
@@ -1408,6 +1637,14 @@
                     <td>${account.occupation || 'N/A'}</td>
                     <td><span class="badge bg-${getStatusColor(account.status)}">${account.status}</span></td>
                     <td>${new Date(account.created_at).toLocaleDateString()}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary me-1" onclick="downloadIndividualForm('account', ${account.id || 'null'}, '${account.email}')" title="Download">
+                            <i class="fas fa-download"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-info" onclick="viewFormDetails('account', ${account.id || 'null'})" title="View Details">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </td>
                 </tr>
             `).join('');
             
@@ -1440,6 +1677,14 @@
                     <td>${contact.message.length > 50 ? contact.message.substring(0, 50) + '...' : contact.message}</td>
                     <td><span class="badge bg-${getStatusColor(contact.status)}">${contact.status}</span></td>
                     <td>${new Date(contact.created_at).toLocaleDateString()}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary me-1" onclick="downloadIndividualForm('contact', ${contact.id || 'null'}, '${contact.email}')" title="Download">
+                            <i class="fas fa-download"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-info" onclick="viewFormDetails('contact', ${contact.id || 'null'})" title="View Details">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </td>
                 </tr>
             `).join('');
             
@@ -1472,6 +1717,14 @@
                     <td>${loan.purpose}</td>
                     <td><span class="badge bg-${getStatusColor(loan.status)}">${loan.status}</span></td>
                     <td>${new Date(loan.created_at).toLocaleDateString()}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary me-1" onclick="downloadIndividualForm('loan', ${loan.id || 'null'}, '${loan.email}')" title="Download">
+                            <i class="fas fa-download"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-info" onclick="viewFormDetails('loan', ${loan.id || 'null'})" title="View Details">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </td>
                 </tr>
             `).join('');
             
@@ -1505,6 +1758,14 @@
                     <td>${investment.duration ? investment.duration.replace('-', ' ') : 'N/A'}</td>
                     <td><span class="badge bg-${getStatusColor(investment.status)}">${investment.status}</span></td>
                     <td>${new Date(investment.created_at).toLocaleDateString()}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary me-1" onclick="downloadIndividualForm('investment', ${investment.id || 'null'}, '${investment.email}')" title="Download">
+                            <i class="fas fa-download"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-info" onclick="viewFormDetails('investment', ${investment.id || 'null'})" title="View Details">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </td>
                 </tr>
             `).join('');
             
@@ -1512,6 +1773,86 @@
             const counter = document.querySelector('#investments-counter');
             if (counter) {
                 counter.textContent = `${investments.length} total records`;
+            }
+        }
+
+        function displayFAQs(faqs) {
+            const container = document.getElementById('faqs-table');
+            const loading = document.getElementById('faqs-loading');
+            const content = document.getElementById('faqs-content');
+            const empty = document.getElementById('faqs-empty');
+
+            loading.style.display = 'none';
+
+            if (faqs.length === 0) {
+                empty.style.display = 'block';
+                return;
+            }
+
+            content.style.display = 'block';
+            container.innerHTML = faqs.map(faq => `
+                <tr>
+                    <td>${faq.question.length > 50 ? faq.question.substring(0, 50) + '...' : faq.question}</td>
+                    <td>${faq.email}</td>
+                    <td>${faq.answer ? (faq.answer.length > 30 ? faq.answer.substring(0, 30) + '...' : faq.answer) : 'N/A'}</td>
+                    <td><span class="badge bg-${getStatusColor(faq.status)}">${faq.status}</span></td>
+                    <td>${new Date(faq.created_at).toLocaleDateString()}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary me-1" onclick="downloadIndividualForm('faq', ${faq.id || 'null'}, '${faq.email}')" title="Download">
+                            <i class="fas fa-download"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-info" onclick="viewFormDetails('faq', ${faq.id || 'null'})" title="View Details">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+            
+            // Initialize search counter
+            const counter = document.querySelector('#faqs-counter');
+            if (counter) {
+                counter.textContent = `${faqs.length} total records`;
+            }
+        }
+
+        function displayCareers(careers) {
+            const container = document.getElementById('careers-table');
+            const loading = document.getElementById('careers-loading');
+            const content = document.getElementById('careers-content');
+            const empty = document.getElementById('careers-empty');
+
+            loading.style.display = 'none';
+
+            if (careers.length === 0) {
+                empty.style.display = 'block';
+                return;
+            }
+
+            content.style.display = 'block';
+            container.innerHTML = careers.map(career => `
+                <tr>
+                    <td>${career.firstName} ${career.lastName}</td>
+                    <td>${career.email}</td>
+                    <td>${career.phone}</td>
+                    <td><span class="badge bg-primary">${career.position ? career.position.replace('-', ' ') : 'N/A'}</span></td>
+                    <td>${career.experience ? career.experience.replace('-', ' ') : 'N/A'}</td>
+                    <td><span class="badge bg-${getStatusColor(career.status)}">${career.status}</span></td>
+                    <td>${new Date(career.created_at).toLocaleDateString()}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary me-1" onclick="downloadIndividualForm('career', ${career.id || 'null'}, '${career.email}')" title="Download">
+                            <i class="fas fa-download"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-info" onclick="viewFormDetails('career', ${career.id || 'null'})" title="View Details">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+            
+            // Initialize search counter
+            const counter = document.querySelector('#careers-counter');
+            if (counter) {
+                counter.textContent = `${careers.length} total records`;
             }
         }
 
@@ -1665,11 +2006,17 @@
             const contactsCount = document.querySelectorAll('#contacts-table tr').length;
             const loansCount = document.querySelectorAll('#loans-table tr').length;
             const investmentsCount = document.querySelectorAll('#investments-table tr').length;
+            const faqsCount = document.querySelectorAll('#faqs-table tr').length;
+            const careersCount = document.querySelectorAll('#careers-table tr').length;
+            const totalCount = accountsCount + contactsCount + loansCount + investmentsCount + faqsCount + careersCount;
 
             document.getElementById('accounts-count').textContent = accountsCount;
             document.getElementById('contacts-count').textContent = contactsCount;
             document.getElementById('loans-count').textContent = loansCount;
             document.getElementById('investments-count').textContent = investmentsCount;
+            document.getElementById('faqs-count').textContent = faqsCount;
+            document.getElementById('careers-count').textContent = careersCount;
+            document.getElementById('total-submissions').textContent = totalCount;
             
             // Update analytics when stats change
             updateAnalytics();
@@ -1687,16 +2034,22 @@
             document.getElementById('contacts-loading').style.display = 'block';
             document.getElementById('loans-loading').style.display = 'block';
             document.getElementById('investments-loading').style.display = 'block';
+            document.getElementById('faqs-loading').style.display = 'block';
+            document.getElementById('careers-loading').style.display = 'block';
             
             document.getElementById('accounts-content').style.display = 'none';
             document.getElementById('contacts-content').style.display = 'none';
             document.getElementById('loans-content').style.display = 'none';
             document.getElementById('investments-content').style.display = 'none';
+            document.getElementById('faqs-content').style.display = 'none';
+            document.getElementById('careers-content').style.display = 'none';
             
             document.getElementById('accounts-empty').style.display = 'none';
             document.getElementById('contacts-empty').style.display = 'none';
             document.getElementById('loans-empty').style.display = 'none';
             document.getElementById('investments-empty').style.display = 'none';
+            document.getElementById('faqs-empty').style.display = 'none';
+            document.getElementById('careers-empty').style.display = 'none';
 
             loadAllData().finally(() => {
                 // Reset button after loading
@@ -1970,6 +2323,240 @@
             // Check authentication status
             checkAuthStatus();
         });
+
+        // New functions for individual form downloads and viewing
+        function downloadIndividualForm(type, id, email) {
+            try {
+                // Get the form data from the table row
+                let formData = {};
+                const tableId = `${type}s-table`;
+                const rows = document.querySelectorAll(`#${tableId} tbody tr`);
+                
+                rows.forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    if (cells.length > 0) {
+                        const rowEmail = cells[1]?.textContent?.trim();
+                        if (rowEmail === email) {
+                            // Extract data based on form type
+                            switch(type) {
+                                case 'account':
+                                    formData = {
+                                        type: 'Account Application',
+                                        name: cells[0]?.textContent?.trim(),
+                                        email: cells[1]?.textContent?.trim(),
+                                        phone: cells[2]?.textContent?.trim(),
+                                        accountType: cells[3]?.textContent?.trim(),
+                                        initialDeposit: cells[4]?.textContent?.trim(),
+                                        occupation: cells[5]?.textContent?.trim(),
+                                        status: cells[6]?.textContent?.trim(),
+                                        date: cells[7]?.textContent?.trim()
+                                    };
+                                    break;
+                                case 'contact':
+                                    formData = {
+                                        type: 'Contact Message',
+                                        name: cells[0]?.textContent?.trim(),
+                                        email: cells[1]?.textContent?.trim(),
+                                        subject: cells[2]?.textContent?.trim(),
+                                        message: cells[3]?.textContent?.trim(),
+                                        status: cells[4]?.textContent?.trim(),
+                                        date: cells[5]?.textContent?.trim()
+                                    };
+                                    break;
+                                case 'loan':
+                                    formData = {
+                                        type: 'Loan Application',
+                                        name: cells[0]?.textContent?.trim(),
+                                        email: cells[1]?.textContent?.trim(),
+                                        amount: cells[2]?.textContent?.trim(),
+                                        purpose: cells[3]?.textContent?.trim(),
+                                        status: cells[4]?.textContent?.trim(),
+                                        date: cells[5]?.textContent?.trim()
+                                    };
+                                    break;
+                                case 'investment':
+                                    formData = {
+                                        type: 'Investment Application',
+                                        name: cells[0]?.textContent?.trim(),
+                                        email: cells[1]?.textContent?.trim(),
+                                        investmentType: cells[2]?.textContent?.trim(),
+                                        amount: cells[3]?.textContent?.trim(),
+                                        duration: cells[4]?.textContent?.trim(),
+                                        status: cells[5]?.textContent?.trim(),
+                                        date: cells[6]?.textContent?.trim()
+                                    };
+                                    break;
+                                case 'faq':
+                                    formData = {
+                                        type: 'FAQ Submission',
+                                        question: cells[0]?.textContent?.trim(),
+                                        email: cells[1]?.textContent?.trim(),
+                                        details: cells[2]?.textContent?.trim(),
+                                        status: cells[3]?.textContent?.trim(),
+                                        date: cells[4]?.textContent?.trim()
+                                    };
+                                    break;
+                                case 'career':
+                                    formData = {
+                                        type: 'Career Application',
+                                        name: cells[0]?.textContent?.trim(),
+                                        email: cells[1]?.textContent?.trim(),
+                                        phone: cells[2]?.textContent?.trim(),
+                                        position: cells[3]?.textContent?.trim(),
+                                        experience: cells[4]?.textContent?.trim(),
+                                        status: cells[5]?.textContent?.trim(),
+                                        date: cells[6]?.textContent?.trim()
+                                    };
+                                    break;
+                            }
+                        }
+                    }
+                });
+
+                // Create CSV content
+                const csvContent = 'data:text/csv;charset=utf-8,' + 
+                    `${formData.type}\n` +
+                    Object.entries(formData).map(([key, value]) => `${key},${value}`).join('\n');
+                
+                // Create and download file
+                const encodedUri = encodeURI(csvContent);
+                const link = document.createElement('a');
+                link.setAttribute('href', encodedUri);
+                link.setAttribute('download', `${formData.type.toLowerCase().replace(/\s+/g, '-')}-${email}-${new Date().toISOString().split('T')[0]}.csv`);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                showNotification(`${formData.type} downloaded successfully!`, 'success');
+                
+            } catch (error) {
+                console.error('Download error:', error);
+                showNotification('Download failed. Please try again.', 'error');
+            }
+        }
+
+        function viewFormDetails(type, id) {
+            // Get the form data from the table row
+            let formData = {};
+            const tableId = `${type}s-table`;
+            const rows = document.querySelectorAll(`#${tableId} tbody tr`);
+            
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                if (cells.length > 0) {
+                    // Extract data based on form type
+                    switch(type) {
+                        case 'account':
+                            formData = {
+                                type: 'Account Application',
+                                name: cells[0]?.textContent?.trim(),
+                                email: cells[1]?.textContent?.trim(),
+                                phone: cells[2]?.textContent?.trim(),
+                                accountType: cells[3]?.textContent?.trim(),
+                                initialDeposit: cells[4]?.textContent?.trim(),
+                                occupation: cells[5]?.textContent?.trim(),
+                                status: cells[6]?.textContent?.trim(),
+                                date: cells[7]?.textContent?.trim()
+                            };
+                            break;
+                        case 'contact':
+                            formData = {
+                                type: 'Contact Message',
+                                name: cells[0]?.textContent?.trim(),
+                                email: cells[1]?.textContent?.trim(),
+                                subject: cells[2]?.textContent?.trim(),
+                                message: cells[3]?.textContent?.trim(),
+                                status: cells[4]?.textContent?.trim(),
+                                date: cells[5]?.textContent?.trim()
+                            };
+                            break;
+                        case 'loan':
+                            formData = {
+                                type: 'Loan Application',
+                                name: cells[0]?.textContent?.trim(),
+                                email: cells[1]?.textContent?.trim(),
+                                amount: cells[2]?.textContent?.trim(),
+                                purpose: cells[3]?.textContent?.trim(),
+                                status: cells[4]?.textContent?.trim(),
+                                date: cells[5]?.textContent?.trim()
+                            };
+                            break;
+                        case 'investment':
+                            formData = {
+                                type: 'Investment Application',
+                                name: cells[0]?.textContent?.trim(),
+                                email: cells[1]?.textContent?.trim(),
+                                investmentType: cells[2]?.textContent?.trim(),
+                                amount: cells[3]?.textContent?.trim(),
+                                duration: cells[4]?.textContent?.trim(),
+                                status: cells[5]?.textContent?.trim(),
+                                date: cells[6]?.textContent?.trim()
+                            };
+                            break;
+                        case 'faq':
+                            formData = {
+                                type: 'FAQ Submission',
+                                question: cells[0]?.textContent?.trim(),
+                                email: cells[1]?.textContent?.trim(),
+                                details: cells[2]?.textContent?.trim(),
+                                status: cells[3]?.textContent?.trim(),
+                                date: cells[4]?.textContent?.trim()
+                            };
+                            break;
+                        case 'career':
+                            formData = {
+                                type: 'Career Application',
+                                name: cells[0]?.textContent?.trim(),
+                                email: cells[1]?.textContent?.trim(),
+                                phone: cells[2]?.textContent?.trim(),
+                                position: cells[3]?.textContent?.trim(),
+                                experience: cells[4]?.textContent?.trim(),
+                                status: cells[5]?.textContent?.trim(),
+                                date: cells[6]?.textContent?.trim()
+                            };
+                            break;
+                    }
+                }
+            });
+
+            // Create modal to display details
+            const modal = document.createElement('div');
+            modal.className = 'modal fade';
+            modal.innerHTML = `
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">${formData.type} Details</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                ${Object.entries(formData).map(([key, value]) => `
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label fw-bold">${key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}:</label>
+                                        <div class="form-control-plaintext bg-light p-2 rounded">${value}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" onclick="downloadIndividualForm('${type}', '${id}', '${formData.email}')">
+                                <i class="fas fa-download me-2"></i>Download
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            const bsModal = new bootstrap.Modal(modal);
+            bsModal.show();
+            
+            modal.addEventListener('hidden.bs.modal', () => {
+                document.body.removeChild(modal);
+            });
+        }
     </script>
 </body>
 </html>
