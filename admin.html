@@ -1150,6 +1150,16 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="cookie-banner.js"></script>
     <script>
+        // Global data storage for accurate form information
+        let globalFormData = {
+            accounts: [],
+            contacts: [],
+            loans: [],
+            investments: [],
+            faqs: [],
+            careers: []
+        };
+
         // Load data when page loads
         // Enhanced search functionality for all tables
         function setupSearch() {
@@ -1627,6 +1637,10 @@
             }
 
             content.style.display = 'block';
+            
+            // Store original data for accurate downloads
+            globalFormData.accounts = accounts;
+            
             container.innerHTML = accounts.map(account => `
                 <tr>
                     <td>${account.full_name}</td>
@@ -1641,7 +1655,7 @@
                         <button class="btn btn-sm btn-outline-primary me-1" onclick="downloadIndividualForm('account', ${account.id || 'null'}, '${account.email}')" title="Download">
                             <i class="fas fa-download"></i>
                         </button>
-                        <button class="btn btn-sm btn-outline-info" onclick="viewFormDetails('account', ${account.id || 'null'})" title="View Details">
+                        <button class="btn btn-sm btn-outline-info" onclick="viewFormDetails('account', ${account.id || 'null'}, '${account.email}')" title="View Details">
                             <i class="fas fa-eye"></i>
                         </button>
                     </td>
@@ -1669,6 +1683,10 @@
             }
 
             content.style.display = 'block';
+            
+            // Store original data for accurate downloads
+            globalFormData.contacts = contacts;
+            
             container.innerHTML = contacts.map(contact => `
                 <tr>
                     <td>${contact.name}</td>
@@ -1681,7 +1699,7 @@
                         <button class="btn btn-sm btn-outline-primary me-1" onclick="downloadIndividualForm('contact', ${contact.id || 'null'}, '${contact.email}')" title="Download">
                             <i class="fas fa-download"></i>
                         </button>
-                        <button class="btn btn-sm btn-outline-info" onclick="viewFormDetails('contact', ${contact.id || 'null'})" title="View Details">
+                        <button class="btn btn-sm btn-outline-info" onclick="viewFormDetails('contact', ${contact.id || 'null'}, '${contact.email}')" title="View Details">
                             <i class="fas fa-eye"></i>
                         </button>
                     </td>
@@ -1709,6 +1727,10 @@
             }
 
             content.style.display = 'block';
+            
+            // Store original data for accurate downloads
+            globalFormData.loans = loans;
+            
             container.innerHTML = loans.map(loan => `
                 <tr>
                     <td>${loan.full_name}</td>
@@ -1721,7 +1743,7 @@
                         <button class="btn btn-sm btn-outline-primary me-1" onclick="downloadIndividualForm('loan', ${loan.id || 'null'}, '${loan.email}')" title="Download">
                             <i class="fas fa-download"></i>
                         </button>
-                        <button class="btn btn-sm btn-outline-info" onclick="viewFormDetails('loan', ${loan.id || 'null'})" title="View Details">
+                        <button class="btn btn-sm btn-outline-info" onclick="viewFormDetails('loan', ${loan.id || 'null'}, '${loan.email}')" title="View Details">
                             <i class="fas fa-eye"></i>
                         </button>
                     </td>
@@ -1749,6 +1771,10 @@
             }
 
             content.style.display = 'block';
+            
+            // Store original data for accurate downloads
+            globalFormData.investments = investments;
+            
             container.innerHTML = investments.map(investment => `
                 <tr>
                     <td>${investment.full_name}</td>
@@ -1762,7 +1788,7 @@
                         <button class="btn btn-sm btn-outline-primary me-1" onclick="downloadIndividualForm('investment', ${investment.id || 'null'}, '${investment.email}')" title="Download">
                             <i class="fas fa-download"></i>
                         </button>
-                        <button class="btn btn-sm btn-outline-info" onclick="viewFormDetails('investment', ${investment.id || 'null'})" title="View Details">
+                        <button class="btn btn-sm btn-outline-info" onclick="viewFormDetails('investment', ${investment.id || 'null'}, '${investment.email}')" title="View Details">
                             <i class="fas fa-eye"></i>
                         </button>
                     </td>
@@ -1790,6 +1816,10 @@
             }
 
             content.style.display = 'block';
+            
+            // Store original data for accurate downloads
+            globalFormData.faqs = faqs;
+            
             container.innerHTML = faqs.map(faq => `
                 <tr>
                     <td>${faq.question.length > 50 ? faq.question.substring(0, 50) + '...' : faq.question}</td>
@@ -1801,7 +1831,7 @@
                         <button class="btn btn-sm btn-outline-primary me-1" onclick="downloadIndividualForm('faq', ${faq.id || 'null'}, '${faq.email}')" title="Download">
                             <i class="fas fa-download"></i>
                         </button>
-                        <button class="btn btn-sm btn-outline-info" onclick="viewFormDetails('faq', ${faq.id || 'null'})" title="View Details">
+                        <button class="btn btn-sm btn-outline-info" onclick="viewFormDetails('faq', ${faq.id || 'null'}, '${faq.email}')" title="View Details">
                             <i class="fas fa-eye"></i>
                         </button>
                     </td>
@@ -1829,6 +1859,10 @@
             }
 
             content.style.display = 'block';
+            
+            // Store original data for accurate downloads
+            globalFormData.careers = careers;
+            
             container.innerHTML = careers.map(career => `
                 <tr>
                     <td>${career.firstName} ${career.lastName}</td>
@@ -1842,7 +1876,7 @@
                         <button class="btn btn-sm btn-outline-primary me-1" onclick="downloadIndividualForm('career', ${career.id || 'null'}, '${career.email}')" title="Download">
                             <i class="fas fa-download"></i>
                         </button>
-                        <button class="btn btn-sm btn-outline-info" onclick="viewFormDetails('career', ${career.id || 'null'})" title="View Details">
+                        <button class="btn btn-sm btn-outline-info" onclick="viewFormDetails('career', ${career.id || 'null'}, '${career.email}')" title="View Details">
                             <i class="fas fa-eye"></i>
                         </button>
                     </td>
@@ -2327,107 +2361,119 @@
         // New functions for individual form downloads and viewing
         function downloadIndividualForm(type, id, email) {
             try {
-                // Get the form data from the table row
+                // Get the form data from the original API data
                 let formData = {};
-                const tableId = `${type}s-table`;
-                const rows = document.querySelectorAll(`#${tableId} tbody tr`);
+                const dataArray = globalFormData[`${type}s`];
                 
-                rows.forEach(row => {
-                    const cells = row.querySelectorAll('td');
-                    if (cells.length > 0) {
-                        const rowEmail = cells[1]?.textContent?.trim();
-                        if (rowEmail === email) {
-                            // Extract data based on form type
-                            switch(type) {
-                                case 'account':
-                                    formData = {
-                                        type: 'Account Application',
-                                        name: cells[0]?.textContent?.trim(),
-                                        email: cells[1]?.textContent?.trim(),
-                                        phone: cells[2]?.textContent?.trim(),
-                                        accountType: cells[3]?.textContent?.trim(),
-                                        initialDeposit: cells[4]?.textContent?.trim(),
-                                        occupation: cells[5]?.textContent?.trim(),
-                                        status: cells[6]?.textContent?.trim(),
-                                        date: cells[7]?.textContent?.trim()
-                                    };
-                                    break;
-                                case 'contact':
-                                    formData = {
-                                        type: 'Contact Message',
-                                        name: cells[0]?.textContent?.trim(),
-                                        email: cells[1]?.textContent?.trim(),
-                                        subject: cells[2]?.textContent?.trim(),
-                                        message: cells[3]?.textContent?.trim(),
-                                        status: cells[4]?.textContent?.trim(),
-                                        date: cells[5]?.textContent?.trim()
-                                    };
-                                    break;
-                                case 'loan':
-                                    formData = {
-                                        type: 'Loan Application',
-                                        name: cells[0]?.textContent?.trim(),
-                                        email: cells[1]?.textContent?.trim(),
-                                        amount: cells[2]?.textContent?.trim(),
-                                        purpose: cells[3]?.textContent?.trim(),
-                                        status: cells[4]?.textContent?.trim(),
-                                        date: cells[5]?.textContent?.trim()
-                                    };
-                                    break;
-                                case 'investment':
-                                    formData = {
-                                        type: 'Investment Application',
-                                        name: cells[0]?.textContent?.trim(),
-                                        email: cells[1]?.textContent?.trim(),
-                                        investmentType: cells[2]?.textContent?.trim(),
-                                        amount: cells[3]?.textContent?.trim(),
-                                        duration: cells[4]?.textContent?.trim(),
-                                        status: cells[5]?.textContent?.trim(),
-                                        date: cells[6]?.textContent?.trim()
-                                    };
-                                    break;
-                                case 'faq':
-                                    formData = {
-                                        type: 'FAQ Submission',
-                                        question: cells[0]?.textContent?.trim(),
-                                        email: cells[1]?.textContent?.trim(),
-                                        details: cells[2]?.textContent?.trim(),
-                                        status: cells[3]?.textContent?.trim(),
-                                        date: cells[4]?.textContent?.trim()
-                                    };
-                                    break;
-                                case 'career':
-                                    formData = {
-                                        type: 'Career Application',
-                                        name: cells[0]?.textContent?.trim(),
-                                        email: cells[1]?.textContent?.trim(),
-                                        phone: cells[2]?.textContent?.trim(),
-                                        position: cells[3]?.textContent?.trim(),
-                                        experience: cells[4]?.textContent?.trim(),
-                                        status: cells[5]?.textContent?.trim(),
-                                        date: cells[6]?.textContent?.trim()
-                                    };
-                                    break;
-                            }
-                        }
-                    }
-                });
+                if (!dataArray || dataArray.length === 0) {
+                    showNotification('No data available for download.', 'error');
+                    return;
+                }
+                
+                // Find the specific record by email
+                const record = dataArray.find(item => item.email === email);
+                
+                if (!record) {
+                    showNotification('Record not found.', 'error');
+                    return;
+                }
+                
+                // Map data based on form type using original API data
+                switch(type) {
+                    case 'account':
+                        formData = {
+                            'Form Type': 'Account Application',
+                            'Full Name': record.full_name || 'N/A',
+                            'Email': record.email || 'N/A',
+                            'Phone': record.phone || 'N/A',
+                            'Account Type': record.account_type || 'N/A',
+                            'Initial Deposit': record.initial_deposit ? `₦${Number(record.initial_deposit).toLocaleString()}` : 'N/A',
+                            'Occupation': record.occupation || 'N/A',
+                            'Status': record.status || 'pending',
+                            'Submitted Date': record.created_at ? new Date(record.created_at).toLocaleString() : 'N/A'
+                        };
+                        break;
+                    case 'contact':
+                        formData = {
+                            'Form Type': 'Contact Message',
+                            'Name': record.name || 'N/A',
+                            'Email': record.email || 'N/A',
+                            'Subject': record.subject || 'General Inquiry',
+                            'Message': record.message || 'N/A',
+                            'Status': record.status || 'pending',
+                            'Submitted Date': record.created_at ? new Date(record.created_at).toLocaleString() : 'N/A'
+                        };
+                        break;
+                    case 'loan':
+                        formData = {
+                            'Form Type': 'Loan Application',
+                            'Full Name': record.full_name || 'N/A',
+                            'Email': record.email || 'N/A',
+                            'Phone': record.phone || 'N/A',
+                            'Amount': record.amount ? `₦${Number(record.amount).toLocaleString()}` : 'N/A',
+                            'Purpose': record.purpose || 'N/A',
+                            'Status': record.status || 'pending',
+                            'Submitted Date': record.created_at ? new Date(record.created_at).toLocaleString() : 'N/A'
+                        };
+                        break;
+                    case 'investment':
+                        formData = {
+                            'Form Type': 'Investment Application',
+                            'Full Name': record.full_name || 'N/A',
+                            'Email': record.email || 'N/A',
+                            'Phone': record.phone || 'N/A',
+                            'Investment Type': record.investment_type || 'N/A',
+                            'Amount': record.amount ? `₦${Number(record.amount).toLocaleString()}` : 'N/A',
+                            'Duration': record.duration || 'N/A',
+                            'Source of Funds': record.source_of_funds || 'N/A',
+                            'Investment Goals': record.goals || 'N/A',
+                            'Status': record.status || 'pending',
+                            'Submitted Date': record.created_at ? new Date(record.created_at).toLocaleString() : 'N/A'
+                        };
+                        break;
+                    case 'faq':
+                        formData = {
+                            'Form Type': 'FAQ Submission',
+                            'Question': record.question || 'N/A',
+                            'Email': record.email || 'N/A',
+                            'Answer': record.answer || 'Not answered yet',
+                            'Category': record.category || 'general',
+                            'Status': record.status || 'pending',
+                            'Submitted Date': record.created_at ? new Date(record.created_at).toLocaleString() : 'N/A'
+                        };
+                        break;
+                    case 'career':
+                        formData = {
+                            'Form Type': 'Career Application',
+                            'First Name': record.firstName || 'N/A',
+                            'Last Name': record.lastName || 'N/A',
+                            'Full Name': `${record.firstName || ''} ${record.lastName || ''}`.trim(),
+                            'Email': record.email || 'N/A',
+                            'Phone': record.phone || 'N/A',
+                            'Position': record.position || 'N/A',
+                            'Experience': record.experience || 'N/A',
+                            'Qualifications': record.qualifications || 'N/A',
+                            'Cover Letter': record.coverLetter || 'N/A',
+                            'Status': record.status || 'pending',
+                            'Submitted Date': record.created_at ? new Date(record.created_at).toLocaleString() : 'N/A'
+                        };
+                        break;
+                }
 
-                // Create CSV content
+                // Create CSV content with proper formatting
                 const csvContent = 'data:text/csv;charset=utf-8,' + 
-                    `${formData.type}\n` +
-                    Object.entries(formData).map(([key, value]) => `${key},${value}`).join('\n');
+                    Object.entries(formData).map(([key, value]) => `"${key}","${value}"`).join('\n');
                 
                 // Create and download file
                 const encodedUri = encodeURI(csvContent);
                 const link = document.createElement('a');
                 link.setAttribute('href', encodedUri);
-                link.setAttribute('download', `${formData.type.toLowerCase().replace(/\s+/g, '-')}-${email}-${new Date().toISOString().split('T')[0]}.csv`);
+                link.setAttribute('download', `${formData['Form Type'].toLowerCase().replace(/\s+/g, '-')}-${email}-${new Date().toISOString().split('T')[0]}.csv`);
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
                 
-                showNotification(`${formData.type} downloaded successfully!`, 'success');
+                showNotification(`${formData['Form Type']} downloaded successfully!`, 'success');
                 
             } catch (error) {
                 console.error('Download error:', error);
@@ -2435,127 +2481,149 @@
             }
         }
 
-        function viewFormDetails(type, id) {
-            // Get the form data from the table row
-            let formData = {};
-            const tableId = `${type}s-table`;
-            const rows = document.querySelectorAll(`#${tableId} tbody tr`);
-            
-            rows.forEach(row => {
-                const cells = row.querySelectorAll('td');
-                if (cells.length > 0) {
-                    // Extract data based on form type
-                    switch(type) {
-                        case 'account':
-                            formData = {
-                                type: 'Account Application',
-                                name: cells[0]?.textContent?.trim(),
-                                email: cells[1]?.textContent?.trim(),
-                                phone: cells[2]?.textContent?.trim(),
-                                accountType: cells[3]?.textContent?.trim(),
-                                initialDeposit: cells[4]?.textContent?.trim(),
-                                occupation: cells[5]?.textContent?.trim(),
-                                status: cells[6]?.textContent?.trim(),
-                                date: cells[7]?.textContent?.trim()
-                            };
-                            break;
-                        case 'contact':
-                            formData = {
-                                type: 'Contact Message',
-                                name: cells[0]?.textContent?.trim(),
-                                email: cells[1]?.textContent?.trim(),
-                                subject: cells[2]?.textContent?.trim(),
-                                message: cells[3]?.textContent?.trim(),
-                                status: cells[4]?.textContent?.trim(),
-                                date: cells[5]?.textContent?.trim()
-                            };
-                            break;
-                        case 'loan':
-                            formData = {
-                                type: 'Loan Application',
-                                name: cells[0]?.textContent?.trim(),
-                                email: cells[1]?.textContent?.trim(),
-                                amount: cells[2]?.textContent?.trim(),
-                                purpose: cells[3]?.textContent?.trim(),
-                                status: cells[4]?.textContent?.trim(),
-                                date: cells[5]?.textContent?.trim()
-                            };
-                            break;
-                        case 'investment':
-                            formData = {
-                                type: 'Investment Application',
-                                name: cells[0]?.textContent?.trim(),
-                                email: cells[1]?.textContent?.trim(),
-                                investmentType: cells[2]?.textContent?.trim(),
-                                amount: cells[3]?.textContent?.trim(),
-                                duration: cells[4]?.textContent?.trim(),
-                                status: cells[5]?.textContent?.trim(),
-                                date: cells[6]?.textContent?.trim()
-                            };
-                            break;
-                        case 'faq':
-                            formData = {
-                                type: 'FAQ Submission',
-                                question: cells[0]?.textContent?.trim(),
-                                email: cells[1]?.textContent?.trim(),
-                                details: cells[2]?.textContent?.trim(),
-                                status: cells[3]?.textContent?.trim(),
-                                date: cells[4]?.textContent?.trim()
-                            };
-                            break;
-                        case 'career':
-                            formData = {
-                                type: 'Career Application',
-                                name: cells[0]?.textContent?.trim(),
-                                email: cells[1]?.textContent?.trim(),
-                                phone: cells[2]?.textContent?.trim(),
-                                position: cells[3]?.textContent?.trim(),
-                                experience: cells[4]?.textContent?.trim(),
-                                status: cells[5]?.textContent?.trim(),
-                                date: cells[6]?.textContent?.trim()
-                            };
-                            break;
-                    }
+        function viewFormDetails(type, id, email) {
+            try {
+                // Get the form data from the original API data
+                let formData = {};
+                const dataArray = globalFormData[`${type}s`];
+                
+                if (!dataArray || dataArray.length === 0) {
+                    showNotification('No data available to view.', 'error');
+                    return;
                 }
-            });
+                
+                // Find the specific record by email
+                const record = dataArray.find(item => item.email === email);
+                
+                if (!record) {
+                    showNotification('Record not found.', 'error');
+                    return;
+                }
+                
+                // Map data based on form type using original API data
+                switch(type) {
+                    case 'account':
+                        formData = {
+                            'Form Type': 'Account Application',
+                            'Full Name': record.full_name || 'N/A',
+                            'Email': record.email || 'N/A',
+                            'Phone': record.phone || 'N/A',
+                            'Account Type': record.account_type || 'N/A',
+                            'Initial Deposit': record.initial_deposit ? `₦${Number(record.initial_deposit).toLocaleString()}` : 'N/A',
+                            'Occupation': record.occupation || 'N/A',
+                            'Status': record.status || 'pending',
+                            'Submitted Date': record.created_at ? new Date(record.created_at).toLocaleString() : 'N/A'
+                        };
+                        break;
+                    case 'contact':
+                        formData = {
+                            'Form Type': 'Contact Message',
+                            'Name': record.name || 'N/A',
+                            'Email': record.email || 'N/A',
+                            'Subject': record.subject || 'General Inquiry',
+                            'Message': record.message || 'N/A',
+                            'Status': record.status || 'pending',
+                            'Submitted Date': record.created_at ? new Date(record.created_at).toLocaleString() : 'N/A'
+                        };
+                        break;
+                    case 'loan':
+                        formData = {
+                            'Form Type': 'Loan Application',
+                            'Full Name': record.full_name || 'N/A',
+                            'Email': record.email || 'N/A',
+                            'Phone': record.phone || 'N/A',
+                            'Amount': record.amount ? `₦${Number(record.amount).toLocaleString()}` : 'N/A',
+                            'Purpose': record.purpose || 'N/A',
+                            'Status': record.status || 'pending',
+                            'Submitted Date': record.created_at ? new Date(record.created_at).toLocaleString() : 'N/A'
+                        };
+                        break;
+                    case 'investment':
+                        formData = {
+                            'Form Type': 'Investment Application',
+                            'Full Name': record.full_name || 'N/A',
+                            'Email': record.email || 'N/A',
+                            'Phone': record.phone || 'N/A',
+                            'Investment Type': record.investment_type || 'N/A',
+                            'Amount': record.amount ? `₦${Number(record.amount).toLocaleString()}` : 'N/A',
+                            'Duration': record.duration || 'N/A',
+                            'Source of Funds': record.source_of_funds || 'N/A',
+                            'Investment Goals': record.goals || 'N/A',
+                            'Status': record.status || 'pending',
+                            'Submitted Date': record.created_at ? new Date(record.created_at).toLocaleString() : 'N/A'
+                        };
+                        break;
+                    case 'faq':
+                        formData = {
+                            'Form Type': 'FAQ Submission',
+                            'Question': record.question || 'N/A',
+                            'Email': record.email || 'N/A',
+                            'Answer': record.answer || 'Not answered yet',
+                            'Category': record.category || 'general',
+                            'Status': record.status || 'pending',
+                            'Submitted Date': record.created_at ? new Date(record.created_at).toLocaleString() : 'N/A'
+                        };
+                        break;
+                    case 'career':
+                        formData = {
+                            'Form Type': 'Career Application',
+                            'First Name': record.firstName || 'N/A',
+                            'Last Name': record.lastName || 'N/A',
+                            'Full Name': `${record.firstName || ''} ${record.lastName || ''}`.trim(),
+                            'Email': record.email || 'N/A',
+                            'Phone': record.phone || 'N/A',
+                            'Position': record.position || 'N/A',
+                            'Experience': record.experience || 'N/A',
+                            'Qualifications': record.qualifications || 'N/A',
+                            'Cover Letter': record.coverLetter || 'N/A',
+                            'Status': record.status || 'pending',
+                            'Submitted Date': record.created_at ? new Date(record.created_at).toLocaleString() : 'N/A'
+                        };
+                        break;
+                }
 
-            // Create modal to display details
-            const modal = document.createElement('div');
-            modal.className = 'modal fade';
-            modal.innerHTML = `
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">${formData.type} Details</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row">
-                                ${Object.entries(formData).map(([key, value]) => `
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label fw-bold">${key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}:</label>
-                                        <div class="form-control-plaintext bg-light p-2 rounded">${value}</div>
-                                    </div>
-                                `).join('')}
+                // Create modal to display details
+                const modal = document.createElement('div');
+                modal.className = 'modal fade';
+                modal.innerHTML = `
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">${formData['Form Type']} Details</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    ${Object.entries(formData).map(([key, value]) => `
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label fw-bold">${key}:</label>
+                                            <div class="form-control-plaintext bg-light p-2 rounded" style="min-height: 40px; word-wrap: break-word;">${value}</div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary" onclick="downloadIndividualForm('${type}', '${id}', '${record.email}')">
+                                    <i class="fas fa-download me-2"></i>Download
+                                </button>
                             </div>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" onclick="downloadIndividualForm('${type}', '${id}', '${formData.email}')">
-                                <i class="fas fa-download me-2"></i>Download
-                            </button>
-                        </div>
                     </div>
-                </div>
-            `;
-            
-            document.body.appendChild(modal);
-            const bsModal = new bootstrap.Modal(modal);
-            bsModal.show();
-            
-            modal.addEventListener('hidden.bs.modal', () => {
-                document.body.removeChild(modal);
-            });
+                `;
+                
+                document.body.appendChild(modal);
+                const bsModal = new bootstrap.Modal(modal);
+                bsModal.show();
+                
+                modal.addEventListener('hidden.bs.modal', () => {
+                    document.body.removeChild(modal);
+                });
+                
+            } catch (error) {
+                console.error('View details error:', error);
+                showNotification('Failed to load form details.', 'error');
+            }
         }
     </script>
 </body>
