@@ -313,6 +313,7 @@ const Faq = require('./models/Faq');
 const Investment = require('./models/Investment');
 const Admin = require('./models/Admin');
 const InvestmentApplication = require('./models/InvestmentApplication');
+const Career = require('./models/Career');
 
 // Authentication middleware
 const authenticateToken = (req, res, next) => {
@@ -876,6 +877,169 @@ app.post('/api/investment-application', async (req, res) => {
   }
 });
 
+// Career Application API endpoint
+app.post('/api/career-application', async (req, res) => {
+  try {
+    const { 
+      firstName, 
+      lastName, 
+      email, 
+      phone, 
+      position, 
+      experience, 
+      qualifications, 
+      coverLetter 
+    } = req.body;
+    
+    if (!firstName || !lastName || !email || !phone || !position || !experience) {
+      return res.status(400).json({ error: 'All required fields must be provided' });
+    }
+
+    // Try database first
+    try {
+      const application = new Career({
+        firstName,
+        lastName,
+        email,
+        phone,
+        position,
+        experience,
+        qualifications,
+        coverLetter
+      });
+      
+      await application.save();
+      console.log('✅ Career application saved to database:', application._id);
+      
+      res.status(201).json({ 
+        success: true, 
+        message: 'Career application submitted successfully!',
+        applicationId: application._id
+      });
+      
+    } catch (dbError) {
+      console.error('❌ Database error:', dbError);
+      
+      // Fallback to file storage
+      const dataDir = path.join(__dirname, 'data');
+      if (!fs.existsSync(dataDir)) {
+        fs.mkdirSync(dataDir, { recursive: true });
+      }
+      
+      const careerFile = path.join(dataDir, 'careers.json');
+      let careers = [];
+      
+      if (fs.existsSync(careerFile)) {
+        careers = JSON.parse(fs.readFileSync(careerFile, 'utf8'));
+      }
+      
+      const newCareer = {
+        id: Date.now().toString(),
+        firstName,
+        lastName,
+        email,
+        phone,
+        position,
+        experience,
+        qualifications,
+        coverLetter,
+        status: 'pending',
+        created_at: new Date().toISOString()
+      };
+      
+      careers.push(newCareer);
+      fs.writeFileSync(careerFile, JSON.stringify(careers, null, 2));
+      
+      console.log('✅ Career application saved to file:', newCareer.id);
+      
+      res.status(201).json({ 
+        success: true, 
+        message: 'Career application submitted successfully!',
+        applicationId: newCareer.id
+      });
+    }
+  } catch (error) {
+    console.error('Error in /api/career-application:', error);
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({ error: `Validation error: ${error.message}` });
+    }
+    res.status(500).json({ error: `Error submitting application: ${error.message}` });
+  }
+});
+
+// FAQ Submission API endpoint
+app.post('/api/faq-submission', async (req, res) => {
+  try {
+    const { question, email, answer, category } = req.body;
+    
+    if (!question || !email) {
+      return res.status(400).json({ error: 'Question and email are required' });
+    }
+
+    // Try database first
+    try {
+      const faq = new Faq({
+        question,
+        email,
+        answer,
+        category: category || 'general'
+      });
+      
+      await faq.save();
+      console.log('✅ FAQ submission saved to database:', faq._id);
+      
+      res.status(201).json({ 
+        success: true, 
+        message: 'FAQ submission received successfully!',
+        faqId: faq._id
+      });
+      
+    } catch (dbError) {
+      console.error('❌ Database error:', dbError);
+      
+      // Fallback to file storage
+      const dataDir = path.join(__dirname, 'data');
+      if (!fs.existsSync(dataDir)) {
+        fs.mkdirSync(dataDir, { recursive: true });
+      }
+      
+      const faqFile = path.join(dataDir, 'faqs.json');
+      let faqs = [];
+      
+      if (fs.existsSync(faqFile)) {
+        faqs = JSON.parse(fs.readFileSync(faqFile, 'utf8'));
+      }
+      
+      const newFaq = {
+        id: Date.now().toString(),
+        question,
+        email,
+        answer,
+        category: category || 'general',
+        status: 'pending',
+        created_at: new Date().toISOString()
+      };
+      
+      faqs.push(newFaq);
+      fs.writeFileSync(faqFile, JSON.stringify(faqs, null, 2));
+      
+      console.log('✅ FAQ submission saved to file:', newFaq.id);
+      
+      res.status(201).json({ 
+        success: true, 
+        message: 'FAQ submission received successfully!',
+        faqId: newFaq.id
+      });
+    }
+  } catch (error) {
+    console.error('Error in /api/faq-submission:', error);
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({ error: `Validation error: ${error.message}` });
+    }
+    res.status(500).json({ error: `Error submitting FAQ: ${error.message}` });
+  }
+});
+
 // Serve static frontend
 const publicDir = path.join(__dirname, '..');
 app.use(express.static(publicDir));
@@ -1039,6 +1203,62 @@ app.get('/api/admin/investment-applications', authenticateToken, async (req, res
   }
 });
 
+// Admin endpoint for FAQ submissions
+app.get('/api/admin/faqs', authenticateToken, async (req, res) => {
+  try {
+    // Try database first
+    try {
+      const faqs = await Faq.find().sort({ created_at: -1 });
+      res.json(faqs);
+      return;
+    } catch (dbError) {
+      console.error('Database error, trying file fallback:', dbError.message);
+      
+      // Fallback to file data
+      const faqsFile = path.join(__dirname, 'data', 'faqs.json');
+      if (fs.existsSync(faqsFile)) {
+        const fileData = JSON.parse(fs.readFileSync(faqsFile, 'utf8'));
+        res.json(fileData);
+        return;
+      } else {
+        res.json([]);
+        return;
+      }
+    }
+  } catch (error) {
+    console.error('Error fetching FAQs:', error);
+    res.status(500).json({ error: 'Error fetching FAQs' });
+  }
+});
+
+// Admin endpoint for Career applications
+app.get('/api/admin/careers', authenticateToken, async (req, res) => {
+  try {
+    // Try database first
+    try {
+      const careers = await Career.find().sort({ created_at: -1 });
+      res.json(careers);
+      return;
+    } catch (dbError) {
+      console.error('Database error, trying file fallback:', dbError.message);
+      
+      // Fallback to file data
+      const careersFile = path.join(__dirname, 'data', 'careers.json');
+      if (fs.existsSync(careersFile)) {
+        const fileData = JSON.parse(fs.readFileSync(careersFile, 'utf8'));
+        res.json(fileData);
+        return;
+      } else {
+        res.json([]);
+        return;
+      }
+    }
+  } catch (error) {
+    console.error('Error fetching career applications:', error);
+    res.status(500).json({ error: 'Error fetching career applications' });
+  }
+});
+
 // File-based data endpoints (fallback data)
 app.get('/api/admin/file-data', authenticateToken, (req, res) => {
   try {
@@ -1075,6 +1295,22 @@ app.get('/api/admin/file-data', authenticateToken, (req, res) => {
       fileData.investment_applications = JSON.parse(fs.readFileSync(investmentAppsFile, 'utf8'));
     } else {
       fileData.investment_applications = [];
+    }
+    
+    // Read FAQ data
+    const faqsFile = path.join(dataDir, 'faqs.json');
+    if (fs.existsSync(faqsFile)) {
+      fileData.faqs = JSON.parse(fs.readFileSync(faqsFile, 'utf8'));
+    } else {
+      fileData.faqs = [];
+    }
+    
+    // Read career applications data
+    const careersFile = path.join(dataDir, 'careers.json');
+    if (fs.existsSync(careersFile)) {
+      fileData.careers = JSON.parse(fs.readFileSync(careersFile, 'utf8'));
+    } else {
+      fileData.careers = [];
     }
     
     res.json(fileData);
