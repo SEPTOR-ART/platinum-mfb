@@ -42,6 +42,7 @@
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       color: var(--text-dark);
+      perspective: 1000px;
     }
 
     .navbar {
@@ -75,6 +76,7 @@
       padding-top: 60px;
       opacity: 0;
       transform: translateX(-10px);
+      transform-style: preserve-3d;
     }
 
     .sidebar.open {
@@ -95,6 +97,7 @@
     .sidebar a:hover {
       background-color: rgba(13, 108, 51, 0.1);
       color: var(--primary);
+      transform: translateX(5px);
     }
 
     .sidebar .closebtn {
@@ -176,13 +179,14 @@
     .btn-primary {
       background-color: var(--primary);
       border-color: var(--primary);
+      transition: all 0.3s ease;
     }
 
     .btn-primary:hover {
       background-color: var(--primary-dark);
       border-color: var(--primary-dark);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transform: translateY(-3px) rotateX(5deg);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
     }
 
     .services-section {
@@ -215,11 +219,12 @@
       height: 100%;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
       margin-bottom: 20px;
+      transform-style: preserve-3d;
     }
 
     .service-card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+      transform: translateY(-10px) rotateX(5deg);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
     }
 
     .service-icon {
