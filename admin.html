@@ -40,22 +40,98 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <style>
+        :root {
+            --primary: #28a745;
+            --primary-dark: #1e7e34;
+            --secondary: #20c997;
+            --success: #28a745;
+            --info: #17a2b8;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --text-dark: #333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      color: var(--text-dark);
-      perspective: 1000px;
-    }
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-dark);
+            perspective: 1000px;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        /* Smooth Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+
+        /* Loading Skeleton */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite;
+        }
         .admin-header {
             background: linear-gradient(135deg, #28a745, #20c997);
             color: white;
             padding: 2rem 0;
             margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            animation: slideIn 0.6s ease-out;
+        }
+
+        .admin-logo {
+            width: 60px;
+            height: 60px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.3);
+            transition: all 0.3s ease;
+        }
+
+        .admin-logo:hover {
+            transform: rotateY(180deg);
+            background: rgba(255,255,255,0.3);
         }
         .card {
             border: none;
             border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
             margin-bottom: 2rem;
+            transition: all 0.3s ease;
+            animation: fadeIn 0.8s ease-out;
+            background: white;
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+            transform: translateY(-5px);
         }
         .card-header {
             background: linear-gradient(135deg, #28a745, #20c997);
@@ -89,6 +165,36 @@
             padding: 1.5rem;
             text-align: center;
             margin-bottom: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            animation: fadeIn 0.6s ease-out;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .stats-card:hover::before {
+            left: 100%;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-8px) rotateX(5deg);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .stats-card:active {
+            transform: translateY(-4px);
         }
         .stats-number {
             font-size: 2.5rem;
@@ -290,6 +396,32 @@
         }
         
         /* Enhanced Table Styles */
+        .table-container {
+            max-height: 600px;
+            overflow-y: auto;
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .table-container::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .table-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .table-container::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            border-radius: 10px;
+        }
+
+        .table-container::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #1e7e34, #17a2b8);
+        }
+
         .table {
             border-radius: 10px;
             overflow: hidden;
@@ -2071,36 +2203,43 @@
         function refreshData() {
             // Add loading animation to refresh button
             const refreshBtn = document.querySelector('button[onclick="refreshData()"]');
-            const originalText = refreshBtn.innerHTML;
+            if (!refreshBtn) return;
+            
+            const originalHTML = refreshBtn.innerHTML;
             refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Refreshing...';
             refreshBtn.disabled = true;
             
+            // Add visual feedback to stats cards
+            const statsCards = document.querySelectorAll('.stats-card');
+            statsCards.forEach(card => {
+                card.style.opacity = '0.6';
+                card.style.transform = 'scale(0.98)';
+            });
+            
             // Reset all loading states
-            document.getElementById('accounts-loading').style.display = 'block';
-            document.getElementById('contacts-loading').style.display = 'block';
-            document.getElementById('loans-loading').style.display = 'block';
-            document.getElementById('investments-loading').style.display = 'block';
-            document.getElementById('faqs-loading').style.display = 'block';
-            document.getElementById('careers-loading').style.display = 'block';
-            
-            document.getElementById('accounts-content').style.display = 'none';
-            document.getElementById('contacts-content').style.display = 'none';
-            document.getElementById('loans-content').style.display = 'none';
-            document.getElementById('investments-content').style.display = 'none';
-            document.getElementById('faqs-content').style.display = 'none';
-            document.getElementById('careers-content').style.display = 'none';
-            
-            document.getElementById('accounts-empty').style.display = 'none';
-            document.getElementById('contacts-empty').style.display = 'none';
-            document.getElementById('loans-empty').style.display = 'none';
-            document.getElementById('investments-empty').style.display = 'none';
-            document.getElementById('faqs-empty').style.display = 'none';
-            document.getElementById('careers-empty').style.display = 'none';
+            const loadingStates = ['accounts', 'contacts', 'loans', 'investments', 'faqs', 'careers'];
+            loadingStates.forEach(type => {
+                const loading = document.getElementById(`${type}-loading`);
+                const content = document.getElementById(`${type}-content`);
+                const empty = document.getElementById(`${type}-empty`);
+                
+                if (loading) loading.style.display = 'block';
+                if (content) content.style.display = 'none';
+                if (empty) empty.style.display = 'none';
+            });
 
             loadAllData().finally(() => {
-                // Reset button after loading
-                refreshBtn.innerHTML = originalText;
+                // Reset button and cards
+                refreshBtn.innerHTML = originalHTML;
                 refreshBtn.disabled = false;
+                
+                statsCards.forEach(card => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'scale(1)';
+                });
+                
+                // Show success notification
+                showNotification('Data refreshed successfully!', 'success');
             });
         }
         
@@ -2162,9 +2301,20 @@
         
         function showNotification(message, type = 'info') {
             const notification = document.createElement('div');
+            const id = 'notification-' + Date.now();
+            notification.id = id;
             notification.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show position-fixed`;
-            notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+            notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px; max-width: 500px; animation: slideIn 0.3s ease-out;';
+            
+            const icons = {
+                success: 'check-circle',
+                error: 'exclamation-triangle',
+                warning: 'exclamation-circle',
+                info: 'info-circle'
+            };
+            
             notification.innerHTML = `
+                <i class="fas fa-${icons[type] || 'info-circle'} me-2"></i>
                 ${message}
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             `;
@@ -2174,7 +2324,12 @@
             // Auto remove after 5 seconds
             setTimeout(() => {
                 if (notification.parentNode) {
-                    notification.remove();
+                    notification.classList.remove('show');
+                    setTimeout(() => {
+                        if (notification.parentNode) {
+                            notification.remove();
+                        }
+                    }, 300);
                 }
             }, 5000);
         }
@@ -2329,10 +2484,25 @@
             });
         }
 
+        // Update last updated time with real-time clock
         function updateLastUpdatedTime() {
             const now = new Date();
-            document.getElementById('last-updated').textContent = now.toLocaleTimeString();
+            const timeString = now.toLocaleTimeString('en-US', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true 
+            });
+            const dateString = now.toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric'
+            });
+            document.getElementById('last-updated').textContent = `${dateString} at ${timeString}`;
         }
+
+        // Update time every second
+        setInterval(updateLastUpdatedTime, 1000);
 
         function performHealthCheck() {
             // Simulate health check
@@ -2364,11 +2534,91 @@
             
             // Start periodic health checks
             setInterval(performHealthCheck, 60000); // Every minute
-            setInterval(updateLastUpdatedTime, 30000); // Every 30 seconds
             
             // Check authentication status
             checkAuthStatus();
+            
+            // Add keyboard shortcuts
+            setupKeyboardShortcuts();
+            
+            // Show welcome message
+            const username = localStorage.getItem('admin_username') || 'Admin';
+            setTimeout(() => {
+                showNotification(`Welcome back, ${username}! Dashboard loaded successfully.`, 'success');
+            }, 500);
         });
+
+        // Keyboard shortcuts
+        function setupKeyboardShortcuts() {
+            document.addEventListener('keydown', function(e) {
+                // Ctrl/Cmd + R: Refresh data
+                if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+                    e.preventDefault();
+                    refreshData();
+                }
+                
+                // Ctrl/Cmd + E: Export data
+                if ((e.ctrlKey || e.metaKey) && e.key === 'e') {
+                    e.preventDefault();
+                    exportData();
+                }
+                
+                // Ctrl/Cmd + L: Logout
+                if ((e.ctrlKey || e.metaKey) && e.key === 'l') {
+                    e.preventDefault();
+                    logout();
+                }
+                
+                // Ctrl/Cmd + /: Show shortcuts help
+                if ((e.ctrlKey || e.metaKey) && e.key === '/') {
+                    e.preventDefault();
+                    showKeyboardShortcuts();
+                }
+            });
+        }
+
+        // Show keyboard shortcuts
+        function showKeyboardShortcuts() {
+            const modal = document.createElement('div');
+            modal.className = 'modal fade';
+            modal.innerHTML = `
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title"><i class="fas fa-keyboard me-2"></i>Keyboard Shortcuts</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="list-group">
+                                <div class="list-group-item">
+                                    <strong>Ctrl + R</strong> - Refresh all data
+                                </div>
+                                <div class="list-group-item">
+                                    <strong>Ctrl + E</strong> - Export data
+                                </div>
+                                <div class="list-group-item">
+                                    <strong>Ctrl + L</strong> - Logout
+                                </div>
+                                <div class="list-group-item">
+                                    <strong>Ctrl + /</strong> - Show this help
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            const bsModal = new bootstrap.Modal(modal);
+            bsModal.show();
+            
+            modal.addEventListener('hidden.bs.modal', () => {
+                document.body.removeChild(modal);
+            });
+        }
 
         // New functions for individual form downloads and viewing
         function downloadIndividualForm(type, id, email) {
