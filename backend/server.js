@@ -188,33 +188,31 @@ const app = express();
 app.use((req, res, next) => {
   // Security headers to prevent browser warnings
   res.setHeader('X-Content-Type-Options', 'nosniff');
-  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
   res.setHeader('X-XSS-Protection', '1; mode=block');
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
   res.setHeader('Permissions-Policy', 
-    'geolocation=(), microphone=(), camera=(), payment=(), usb=(), magnetometer=(), gyroscope=(), speaker=(), vibrate=(), fullscreen=(self), sync-xhr=()'
+    'geolocation=(), microphone=(), camera=(), payment=(), usb=()'
   );
   
-  // Enhanced Content Security Policy
+  // Relaxed Content Security Policy for compatibility
   res.setHeader('Content-Security-Policy', 
     "default-src 'self'; " +
     "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; " +
-    "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; " +
+    "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; " +
     "img-src 'self' data: https: blob:; " +
-    "font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; " +
+    "font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com https://fonts.googleapis.com; " +
     "connect-src 'self' https://platinum-mfb.onrender.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; " +
     "media-src 'self'; " +
     "object-src 'none'; " +
     "base-uri 'self'; " +
-    "form-action 'self'; " +
-    "frame-ancestors 'none'; " +
-    "upgrade-insecure-requests; " +
-    "block-all-mixed-content"
+    "form-action 'self' https://platinum-mfb.onrender.com; " +
+    "frame-ancestors 'self'; " +
+    "upgrade-insecure-requests"
   );
   
   // Strict Transport Security (HSTS)
-  res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
-  res.setHeader('X-DNS-Prefetch-Control', 'off');
+  res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
   res.removeHeader('X-Powered-By');
   
   next();
@@ -335,11 +333,12 @@ const authenticateToken = (req, res, next) => {
 
 // Routes
 
-// Admin Login Route
+// Admin Login Route with enhanced security
 app.post('/api/admin/login', async (req, res) => {
   try {
     const { username, password, remember } = req.body;
 
+    // Input validation
     if (!username || !password) {
       return res.status(400).json({ 
         success: false, 
@@ -347,21 +346,42 @@ app.post('/api/admin/login', async (req, res) => {
       });
     }
 
-    // Find admin user
-    const admin = await Admin.findOne({ username, isActive: true });
+    // Validate username format
+    if (!/^[a-zA-Z0-9_.-]+$/.test(username) || username.length < 3 || username.length > 50) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Invalid username format' 
+      });
+    }
+
+    // Validate password length
+    if (password.length < 6 || password.length > 100) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Invalid password format' 
+      });
+    }
+
+    // Find admin user (case-insensitive username)
+    const admin = await Admin.findOne({ 
+      username: { $regex: new RegExp(`^${username}$`, 'i') }, 
+      isActive: true 
+    });
 
     if (!admin) {
+      // Use same error message to prevent username enumeration
       return res.status(401).json({ 
         success: false, 
-        message: 'Invalid username or password' 
+        message: 'Invalid credentials. Please check your username and password.' 
       });
     }
 
     // Check if account is locked
     if (admin.isLocked) {
+      const lockTimeRemaining = Math.ceil((admin.lockUntil - Date.now()) / 60000);
       return res.status(423).json({ 
         success: false, 
-        message: 'Account is temporarily locked due to too many failed login attempts. Please try again later.' 
+        message: `Account is temporarily locked due to multiple failed login attempts. Please try again in ${lockTimeRemaining} minute(s).` 
       });
     }
 
@@ -372,9 +392,10 @@ app.post('/api/admin/login', async (req, res) => {
       // Increment login attempts
       await admin.incLoginAttempts();
       
+      // Use same error message to prevent username enumeration
       return res.status(401).json({ 
         success: false, 
-        message: 'Invalid username or password' 
+        message: 'Invalid credentials. Please check your username and password.' 
       });
     }
 
@@ -382,17 +403,21 @@ app.post('/api/admin/login', async (req, res) => {
     await admin.resetLoginAttempts();
     await admin.updateLastLogin();
 
-    // Generate JWT token
+    // Generate JWT token with enhanced payload
     const tokenExpiry = remember ? '30d' : '24h';
     const token = jwt.sign(
       { 
         id: admin._id, 
         username: admin.username, 
-        role: admin.role 
+        role: admin.role,
+        iat: Math.floor(Date.now() / 1000)
       },
       process.env.JWT_SECRET,
       { expiresIn: tokenExpiry }
     );
+
+    // Log successful login (for security audit)
+    console.log(`✅ Successful login: ${admin.username} at ${new Date().toISOString()}`);
 
     res.json({
       success: true,
@@ -411,7 +436,7 @@ app.post('/api/admin/login', async (req, res) => {
     console.error('Login error:', error);
     res.status(500).json({ 
       success: false, 
-      message: 'Internal server error' 
+      message: 'An error occurred during login. Please try again later.' 
     });
   }
 });

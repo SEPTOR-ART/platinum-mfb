@@ -1,0 +1,5 @@
+# Force HTTPS
+http://platinum-mfb.netlify.app/* https://platinum-mfb.netlify.app/:splat 301!
+
+# SPA fallback
+/*    /index.html   200
