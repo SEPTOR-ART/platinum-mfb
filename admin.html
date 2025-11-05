@@ -32,17 +32,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <!-- Security Meta Tags -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; img-src 'self' data: https: blob:; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; connect-src 'self' https://platinum-mfb.onrender.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests; block-all-mixed-content;">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-Frame-Options" content="DENY">
     <meta http-equiv="X-XSS-Protection" content="1; mode=block">
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-    <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=(), payment=(), usb=(), magnetometer=(), gyroscope=(), fullscreen=(self), sync-xhr=()">
-    <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains; preload">
-    <meta http-equiv="X-DNS-Prefetch-Control" content="off">
-    <meta http-equiv="Cross-Origin-Embedder-Policy" content="require-corp">
-    <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin">
-    <meta http-equiv="Cross-Origin-Resource-Policy" content="same-origin">
     <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, private">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -1306,9 +1299,15 @@
             return true;
         }
 
-        // Verify token with server
+        // Verify token with server (with relaxed error handling)
         async function verifyToken() {
             const token = localStorage.getItem('admin_token');
+            
+            if (!token) {
+                console.log('No token found');
+                window.location.href = 'login.html';
+                return false;
+            }
             
             try {
                 const response = await fetch('https://platinum-mfb.onrender.com/api/admin/verify', {
@@ -1320,24 +1319,34 @@
                 });
                 
                 if (!response.ok) {
+                    console.log('Token verification failed with status:', response.status);
                     // Token invalid, redirect to login
                     localStorage.removeItem('admin_token');
                     localStorage.removeItem('admin_expires');
                     localStorage.removeItem('admin_username');
+                    localStorage.removeItem('admin_user');
                     window.location.href = 'login.html';
                     return false;
                 }
                 
                 const data = await response.json();
-                console.log('Authenticated as:', data.user.username);
+                console.log('✅ Authenticated as:', data.user.username);
                 return true;
                 
             } catch (error) {
                 console.error('Token verification error:', error);
-                // Network error, redirect to login for security
+                // If network error but token exists and not expired, allow access
+                const expires = localStorage.getItem('admin_expires');
+                if (expires && new Date() < new Date(expires)) {
+                    console.log('⚠️ Network error but token still valid, allowing access');
+                    return true;
+                }
+                
+                // Otherwise redirect to login
                 localStorage.removeItem('admin_token');
                 localStorage.removeItem('admin_expires');
                 localStorage.removeItem('admin_username');
+                localStorage.removeItem('admin_user');
                 window.location.href = 'login.html';
                 return false;
             }
@@ -1357,13 +1366,15 @@
                 return;
             }
             
-            // Verify token with server
-            const isAuthenticated = await verifyToken();
-            if (!isAuthenticated) {
-                return;
-            }
+            // Try to verify token with server (non-blocking)
+            verifyToken().then(isAuthenticated => {
+                if (!isAuthenticated) {
+                    console.log('Token verification failed');
+                    // Page will redirect automatically
+                }
+            });
             
-            // Load data and setup search
+            // Load data and setup search (don't wait for verification)
             loadAllData();
             setupSearch();
         });
